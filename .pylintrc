@@ -1,0 +1,6 @@
+[MASTER]
+load-plugins=pylint_django
+django-settings-module=project.settings
+
+[MESSAGES CONTROL]
+errors-only=yes

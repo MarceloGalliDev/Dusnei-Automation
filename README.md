@@ -8,3 +8,11 @@ Para criar ambiente virtual
 
 Para instalar linters
 > install-linters
+
+
+#### Django
+Instalando bibliotecas
+> pip install django
+> pip install djangorestframework
+> pip install markdown
+> pip install python-dotenv
