@@ -25,6 +25,7 @@ ALLOWED_HOSTS: list[str] = []
 
 # Apps installed
 INSTALLED_APPS = [
+    'adminlte3_theme',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -32,7 +33,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'app',
     'brf',
+    'adminlte3',
+    'bootstrap5',
 ]
 
 
@@ -60,15 +64,13 @@ REST_FRAMEWORK = {
 
 # Url's base
 ROOT_URLCONF = 'project.urls'
-
+TEMPLATE_DIR = os.path.join(BASE_DIR, "base_templates")
 
 # Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR / 'base_templates',
-        ],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
