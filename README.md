@@ -3,8 +3,8 @@
 
 #### Aliases
 Para criar ambiente virtual 
-> criar-venv-2
-> ativar-venv-2
+> criar-venv-1
+> ativar-venv-1
 
 Para instalar linters
 > install-linters
