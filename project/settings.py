@@ -32,8 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'app',
     'adminlte3',
-    'adminlte3_theme',
     'bootstrap5',
 ]
 
