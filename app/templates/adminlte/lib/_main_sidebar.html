@@ -1,4 +1,3 @@
-
 {% load adminlte_helpers i18n %}
 {% load static %}
 
@@ -8,7 +7,7 @@
      <!-- Brand Logo -->
     {% block logo %}
         <a href="/" class="brand-link">
-            <img src="{% static 'admin-lte/dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <img src="https://i.imgur.com/TbFSnZi.png" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
             {% block logo_text %}<span class="brand-text font-weight-light">Dusnei</span>{% endblock %}
         </a>
     {% endblock %}
@@ -18,9 +17,6 @@
         {% block user_panel %}
         <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{% avatar_url size=90 %}" class="img-circle elevation-2" alt="User Image">
-        </div>
         <div class="info">
           <a href="#" class="d-block">{% firstof request.user.get_full_name request.user.username %}</a>
         </div>
@@ -34,21 +30,17 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             {% block nav_links_outer %}
-            <li class="nav-header">{% block nav_heading %}MAIN NAVIGATION{% endblock %}</li>
+            <li class="nav-header">{% block nav_heading %}MENU{% endblock %}</li>
 
             {% block nav_links %}
+
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{% url 'dash:info' %}" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i> 
-                        <p>Example link</p>
+                        <p>Informações</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                        <a href="#" class="nav-link active">
-                            <i class="nav-icon fas fa-tachometer-alt"></i> 
-                            <p>Example link active</p>
-                        </a>
-                    </li>
+
                 <li class="nav-item has-tree-view ">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-object-group"></i> <p>Sub menu</p>
@@ -56,18 +48,20 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview menu-open">
-                            <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="nav-icon fas fa-circle"></i> link
-                                    </a>
-                                </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-user"></i> Another link
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-circle"></i> link
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-circle"></i> link
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
+                
             {% endblock nav_links %}
             {% endblock nav_links_outer %}
             </ul>

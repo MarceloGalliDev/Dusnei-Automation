@@ -2,18 +2,25 @@
 {% load adminlte_helpers i18n %}
 {% load static %}
 
+{% block title %}
+    Login | 
+{% endblock title %}
 
-{% block body_class %}login-page{% endblock %}
+{% block body_class %}login-page{% endblock body_class %}
 
 {% block body %}
+
+
     <div class="login-box">
+        
+        <!-- login-logo -->
         {% block logo %}
-        <div class="login-logo">
-            {# Mirrors block names used in _main_header.html #}
-            <a href="{% block logo_href %}/{% endblock %}">{% block logo_text %}<b>Admin</b>LTE{% endblock %}</a>
-        </div>
+            <div class="login-logo">
+                {# Mirrors block names used in _main_header.html #}
+                <a href="{% block logo_href %}/{% endblock %}">{% block logo_text %}Dusnei{% endblock %}</a>
+            </div>
         {% endblock %}
-        <!-- /.login-logo -->
+
         <div class="login-box-body">
             {% block login_errors %}
                 {% if form.errors and not form.non_field_errors %}
@@ -60,4 +67,4 @@
 
         </div>
     </div>
-{% endblock %}
+{% endblock body %}
