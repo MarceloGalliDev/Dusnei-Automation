@@ -1,3 +1,5 @@
+# verifcar as PK
+# verficar as FK (on_delete)
 from django.db import models
 
 
@@ -57,4 +59,3 @@ class Clientes(models.Model):
     class Meta:
         managed = False
         db_table = 'clientes'
-

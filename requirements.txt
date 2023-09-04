@@ -4,7 +4,7 @@ autopep8==2.0.4
 beautifulsoup4==4.12.2
 colorama==0.4.6
 dill==0.3.7
-Django==4.2.4
+Django==4.0
 django-adminlte3==0.1.6
 django-bootstrap-v5==1.0.11
 djangorestframework==3.14.0
