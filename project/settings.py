@@ -83,10 +83,20 @@ TEMPLATES = [
 # Server productions
 WSGI_APPLICATION = 'project.wsgi.application'
 
+# Router Databases
+# DATABASE_ROUTERS = ['path.to.MyRouter']
 
 # Databases config
 DATABASES = {
     'default': {
+        'ENGINE': os.getenv('DUSNEI_ENGINE', 'change-me'),
+        'NAME': os.getenv('DUSNEI_DB', 'change-me'),
+        'USER': os.getenv('DUSNEI_USER', 'change-me'),
+        'PASSWORD': os.getenv('DUSNEI_PASSWORD', 'change-me'),
+        'HOST': os.getenv('DUSNEI_HOST', 'change-me'),
+        'PORT': os.getenv('DUSNEI_PORT', 'change-me'),
+    },
+    'dusnei_dev': {
         'ENGINE': os.getenv('DB_ENGINE', 'change-me'),
         'NAME': os.getenv('POSTGRES_DB', 'change-me'),
         'USER': os.getenv('POSTGRES_USER', 'change-me'),
