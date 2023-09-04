@@ -53,10 +53,12 @@ class Clientes:
             AND clie.clie_cepres > '0'
             AND clie.clie_cepres NOT IN ('')
             AND clie.clie_razaosocial NOT IN ('TESTE', '')
+            AND clie.clie_nome NOT ILIKE 'vendedor%'
         """)
         return pd.read_sql_query(query, conn)
+    
 
-    def process_rows(self, df, unid_codigo):
+    def process_rows(self, df, unid_codigo): 
         processed_rows = []
         for index, row in df.iterrows():
             caracter_adc = "D"

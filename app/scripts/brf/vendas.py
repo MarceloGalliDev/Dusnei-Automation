@@ -26,6 +26,7 @@ class Vendas:
             SELECT 
                 mprd.mprd_transacao AS transacao,
                 clie.clie_cnpjcpf AS cnpj_cpf,
+                clie.clie_nome AS nome_clie,
                 mprd.mprd_datamvto AS data_mvto,
                 mprd.mprd_numerodcto AS nfe,
                 prod.prod_codbarras AS cod_barras,
@@ -35,11 +36,12 @@ class Vendas:
                 TO_CHAR((mprd.mprd_valor / mprd.mprd_qtde), '00999D99') AS valor_unitario_2,
                 TO_CHAR(mprd.mprd_vlrunitario, '00999D99') AS valor_unitario,
                 mprc.mprc_vend_codigo AS cod_vend,
+                mprc.mprc_codentidade AS cod_clie,
                 mprd.mprd_dcto_codigo AS dcto_cod,
                 mprd.mprd_embcom AS embalagem_vend,
                 SUBSTRING(clie.clie_cepres, 1,5) ||'-'|| SUBSTRING(clie.clie_cepres, 6,3) AS cep
             FROM {table_name} AS mprd
-            LEFT JOIN movprodc AS mprc ON mprd.mprd_operacao = mprc.mprc_operacao
+            LEFT JOIN movprodc AS mprc ON mprd.mprd_transacao = mprc.mprc_transacao
             LEFT JOIN produtos AS prod ON mprd.mprd_prod_codigo = prod.prod_codigo
             LEFT JOIN clientes AS clie ON mprc.mprc_codentidade = clie.clie_codigo
             WHERE mprd_status = 'N'
@@ -52,8 +54,11 @@ class Vendas:
             AND clie.clie_cepres > '0'
             AND clie.clie_cepres NOT IN ('')
             AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '7 DAYS'
+            AND clie.clie_nome NOT ILIKE '%vendedor%'
         """)
-        return pd.read_sql_query(query, conn)
+        
+        df = pd.read_sql_query(query, self.conn)
+        return df
         
     def process_rows(self, df, unid_codigo):
         processed_rows = []
@@ -90,7 +95,7 @@ class Vendas:
             tipo_unid = '0002' if row['embalagem_vend'] == 'KG' else '0001'
                             
             espaco_branco1 = ' '*4
-            espaco_branco2 = ' '*13
+            espaco_branco2 = ' '*14
             espaco_branco3 = ' '
             espaco_branco4 = ' '*16
             espaco_branco5 = ' '*10
