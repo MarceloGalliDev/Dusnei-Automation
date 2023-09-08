@@ -14,7 +14,7 @@ from unidecode import unidecode
 class Clientes:
     def __init__(self):
         load_dotenv()
-        self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY')
+        self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
         self.unid_codigos = ['001', '002', ['003', '010']]
         self.conn = DatabaseConnection.get_db_engine(self)
 
@@ -52,13 +52,14 @@ class Clientes:
             AND clie.clie_cepres NOT IN ('00000-000','','0','00000','00000000')
             AND clie.clie_cepres > '0'
             AND clie.clie_cepres NOT IN ('')
-            AND clie.clie_razaosocial NOT IN ('TESTE', '')
-            AND clie.clie_nome NOT ILIKE %vendedor%
+            AND clie.clie_razaosocial NOT IN ('TESTE', '', 'VENDEDOR')
         """)
-        return pd.read_sql_query(query, conn)
+        query_test = pd.read_sql_query(query, conn)
+        return query_test
     
 
-    def process_rows(self, df, unid_codigo): 
+    def process_rows(self, df, unid_codigo):
+        df = df.loc[~df['clie_nome'].str.contains('vendedor', case=False)]
         processed_rows = []
         for index, row in df.iterrows():
             caracter_adc = "D"
@@ -126,6 +127,7 @@ class Clientes:
     def clientes(self):
         for unid_codigo in self.unid_codigos:
             df = pd.concat([self.clientes_query( self.conn, unid_codigo)])
+            df = df.loc[~df['clie_nome'].str.contains('vendedor', case=False)]  
             
             processed_rows = self.process_rows(df, unid_codigo)
             data_atual = datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
@@ -136,3 +138,7 @@ class Clientes:
 if __name__ == "__main__":
     db_clientes = Clientes()    
     db_clientes.clientes()
+    
+    
+    
+    

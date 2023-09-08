@@ -28,3 +28,4 @@ Instalando bibliotecas
 
 
 #### Banco de Dados PostgreSQL
+>python manage.py inspectdb municipios > models-script.py 

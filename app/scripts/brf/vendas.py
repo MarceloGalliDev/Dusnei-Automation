@@ -13,7 +13,7 @@ from conn import DatabaseConnection
 class Vendas:
     def __init__(self):
         load_dotenv()
-        self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY')
+        self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
         self.unid_codigos = ["001", "002", ['003', '010']]
         self.conn = DatabaseConnection.get_db_engine(self)
    
@@ -54,13 +54,13 @@ class Vendas:
             AND clie.clie_cepres > '0'
             AND clie.clie_cepres NOT IN ('')
             AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '7 DAYS'
-            AND clie.clie_nome NOT ILIKE '%vendedor%'
         """)
         
         df = pd.read_sql_query(query, self.conn)
         return df
         
     def process_rows(self, df, unid_codigo):
+        df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
         processed_rows = []
         for index, row in df.iterrows():
             caracter_adc = "D"
@@ -146,6 +146,7 @@ class Vendas:
             tables = ['movprodd0122', 'movprodd0222', 'movprodd0322', 'movprodd0422', 'movprodd0522', 'movprodd0622', 'movprodd0722', 'movprodd0822', 'movprodd0922', 'movprodd1022', 'movprodd1122', 'movprodd1222', 'movprodd0123', 'movprodd0223', 'movprodd0323', 'movprodd0423', 'movprodd0523', 'movprodd0623', 'movprodd0723', 'movprodd0823', 'movprodd0923', 'movprodd1023',  'movprodd1123', 'movprodd1223']
             
             df = pd.concat([self.vendas_query(table, self.conn, unid_codigo)for table in tables])
+            df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
             
             processed_rows = self.process_rows(df, unid_codigo)
             data_atual = datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]

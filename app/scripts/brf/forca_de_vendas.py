@@ -13,7 +13,7 @@ from unidecode import unidecode
 class Forca_De_Venda:
     def __init__(self):
         load_dotenv()
-        self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY')
+        self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
         self.unid_codigos = ["001", "002", ['003','010']]
         self.conn = DatabaseConnection.get_db_engine(self)
     

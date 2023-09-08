@@ -16,7 +16,7 @@ from email.mime.application import MIMEApplication
 class Envio_Email:
     def __init__(self):
         load_dotenv()
-        self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY')
+        self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
         self.password_email = os.getenv('EMAIL_PASSWORD')
         self.email_from = os.getenv('EMAIL_FROM')
         self.email_to = os.getenv('EMAIL_TO')

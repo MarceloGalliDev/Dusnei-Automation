@@ -49,9 +49,9 @@ class ReportSender:
         self.clientes.clientes()
         logger.info('Clientes enviado!')
 
-    # def _send_emails(self):
-    #     self.envio_email.envio_email()
-    #     logger.info('E-mails enviado!')
+    def _send_emails(self):
+        self.envio_email.envio_email()
+        logger.info('E-mails enviado!')
 
 if __name__ == "__main__":
     report_sender = ReportSender()
