@@ -76,10 +76,10 @@ def vendas_estado():
         'movprodd0623', 
         'movprodd0723', 
         'movprodd0823', 
-        # 'movprodd0923', 
-        # 'movprodd1023', 
-        # 'movprodd1123', 
-        # 'movprodd1223'
+        'movprodd0923', 
+        'movprodd1023', 
+        'movprodd1123', 
+        'movprodd1223'
     ]
     
     wb = openpyxl.Workbook()
@@ -122,11 +122,11 @@ def vendas_estado():
     dataAtual = datetime.now().strftime("%Y-%m-%d")
     nomeArquivo = (f'VENDASDUSNEIPR{dataAtual}')
     ws.title = dataAtual
-    diretorio = f'C:/Users/Windows/Documents/Python/mccain-automation/app/data/{dataAtual}'
+    diretorio = f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}'
     if not os.path.exists(diretorio):
         os.mkdir(diretorio)
     local_arquivo = os.path.join(
-        f'C:/Users/Windows/Documents/Python/mccain-automation/app/data/{dataAtual}/{nomeArquivo}.xlsx')
+        f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
     wb.save(local_arquivo)
     

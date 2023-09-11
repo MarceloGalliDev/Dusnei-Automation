@@ -21,7 +21,7 @@ def log_data():
 def get_db_engine():
     log_data()
     try:
-        db_url = os.getenv('URL')
+        db_url = os.getenv('DUSNEI_URL')
         engine = create_engine(db_url)
         # Test connection
         with engine.connect() as connection:  # noqa: F841

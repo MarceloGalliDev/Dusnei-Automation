@@ -13,9 +13,9 @@ log_data()
 
 def clientes():
     FTP_CONFIG = {
-        'server_ftp_mccain': os.getenv('SERVER-FTP_MCCAIN'),
-        'user_ftp_mccain': os.getenv('USER-FTP_MCCAIN'),
-        'password_ftp_mccain': os.getenv('PASSWORD-FTP_MCCAIN'),
+        'server_ftp_mccain': os.getenv('SERVER_FTP_MCCAIN'),
+        'user_ftp_mccain': os.getenv('USER_FTP_MCCAIN'),
+        'password_ftp_mccain': os.getenv('PASSWORD_FTP_MCCAIN'),
         'path_clientes_mccain': os.getenv('PATH_CLIENTES_MCCAIN'),
         'path_estoque_mccain': os.getenv('PATH_ESTOQUE_MCCAIN'),
         'path_produto_mccain': os.getenv('PATH_PRODUTO_MCCAIN'),
@@ -113,27 +113,27 @@ def clientes():
         wb.save(local_arquivo)
 
 
-    with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
-        ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])
+    # with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
+    #     ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])
 
-        remote_dir_path = os.path.join(FTP_CONFIG['path_clientes_mccain'])
+    #     remote_dir_path = os.path.join(FTP_CONFIG['path_clientes_mccain'])
 
-        # try:
-        #     ftp.mkd(remote_dir_path)
-        #     print(f'Diretório {remote_dir_path} criado!')
-        # except Exception as e:
-        #     print('Não foi possível criar a pasta, pode ser que já exista!')
+    #     # try:
+    #     #     ftp.mkd(remote_dir_path)
+    #     #     print(f'Diretório {remote_dir_path} criado!')
+    #     # except Exception as e:
+    #     #     print('Não foi possível criar a pasta, pode ser que já exista!')
 
-        for arquivos_data in os.listdir(diretorio):
-            if 'CLIENTES' in arquivos_data:
-                file_path = os.path.join(diretorio, arquivos_data)
+    #     for arquivos_data in os.listdir(diretorio):
+    #         if 'CLIENTES' in arquivos_data:
+    #             file_path = os.path.join(diretorio, arquivos_data)
 
-                if os.path.isfile(file_path):
-                    with open(local_arquivo, 'rb') as local_file:
-                        remote_path = os.path.join(remote_dir_path, arquivos_data)
-                        ftp.storbinary(f"STOR {remote_path}", local_file)
-                logging.info(
-                    f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
+    #             if os.path.isfile(file_path):
+    #                 with open(local_arquivo, 'rb') as local_file:
+    #                     remote_path = os.path.join(remote_dir_path, arquivos_data)
+    #                     ftp.storbinary(f"STOR {remote_path}", local_file)
+    #             logging.info(
+    #                 f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
 
 if __name__ == "__main__":
     clientes()

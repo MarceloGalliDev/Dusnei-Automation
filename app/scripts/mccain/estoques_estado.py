@@ -14,19 +14,19 @@ log_data()
 
 def estoques_estado():
     FTP_CONFIG = {
-        'server-ftp': os.getenv('SERVER-FTP'),
-        'user-ftp': os.getenv('USER-FTP'),
-        'password-ftp': os.getenv('PASSWORD-FTP'),
-        'path_produto': os.getenv('PATH-PRODUTO'),
-        'path_clientes': os.getenv('PATH-CLIENTES'),
-        'path_clientes_sp': os.getenv('PATH-CLIENTES-SP'),
-        'path_clientes_pr': os.getenv('PATH-CLIENTES-PR'),
-        'path_estoque': os.getenv('PATH-ESTOQUE'),
-        'path_estoque_sp': os.getenv('PATH-ESTOQUE-SP'),
-        'path_estoque_pr': os.getenv('PATH-ESTOQUE-PR'),
-        'path_vendas': os.getenv('PATH-VENDAS'),
-        'path_vendas_SP': os.getenv('PATH-VENDAS-SP'),
-        'path_vendas_PR': os.getenv('PATH-VENDAS-PR'),
+        'server_ftp_mccain': os.getenv('SERVER_FTP_MCCAIN'),
+        'user_ftp_mccain': os.getenv('USER_FTP_MCCAIN'),
+        'password_ftp_mccain': os.getenv('PASSWORD_FTP_MCCAIN'),
+        'path_produto_mccain': os.getenv('PATH_PRODUTO_MCCAIN'),
+        'path_clientes_mccain': os.getenv('PATH_CLIENTES_MCCAIN'),
+        'path_clientes_sp_mccain': os.getenv('PATH_CLIENTES_SP_MCCAIN'),
+        'path_clientes_pr_mccain': os.getenv('PATH_CLIENTES_PR_MCCAIN'),
+        'path_estoque_mccain': os.getenv('PATH_ESTOQUE_MCCAIN'),
+        'path_estoque_sp_mccain': os.getenv('PATH_ESTOQUE_SP_MCCAIN'),
+        'path_estoque_pr_mccain': os.getenv('PATH_ESTOQUE_PR_MCCAIN'),
+        'path_vendas_mccain': os.getenv('PATH_VENDAS_MCCAIN'),
+        'path_vendas_sp_mccain': os.getenv('PATH_VENDAS_SP_MCCAIN'),
+        'path_vendas_pr_mccain': os.getenv('PATH_VENDAS_PR_MCCAIN'),
     }
 
     unid_codigos = [['001','003'], '002']
@@ -90,20 +90,20 @@ def estoques_estado():
         dataAtual = datetime.now().strftime("%Y-%m-%d")
         nomeArquivo = (f'ESTOQUEDUSNEI{unid_codigo}{dataAtual}')
         ws.title = dataAtual
-        diretorio = f'C:/Users/Windows/Documents/Python/mccain-automation/app/data/{dataAtual}'
+        diretorio = f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}'
         if not os.path.exists(diretorio):
             os.mkdir(diretorio, exist_ok=True)
         local_arquivo = os.path.join(
-            f'C:/Users/Windows/Documents/Python/mccain-automation/app/data/{dataAtual}/{nomeArquivo}.xlsx')
+            f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
 
 
-    with FTP(FTP_CONFIG['server-ftp']) as ftp:
-        ftp.login(user=FTP_CONFIG['user-ftp'], passwd=FTP_CONFIG['password-ftp'])
+    with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
+        ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])
 
-        remote_dir_path_pr = os.path.join(FTP_CONFIG['path_estoque_pr'])
-        remote_dir_path_sp = os.path.join(FTP_CONFIG['path_estoque_sp'])
+        remote_dir_path_pr = os.path.join(FTP_CONFIG['path_estoque_pr_mccain'])
+        remote_dir_path_sp = os.path.join(FTP_CONFIG['path_estoque_sp_mccain'])
 
         # try:
         #     ftp.mkd(remote_dir_path)

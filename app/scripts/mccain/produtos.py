@@ -14,13 +14,13 @@ log_data()
 
 def produtos():
     FTP_CONFIG = {
-        'server-ftp': os.getenv('SERVER-FTP'),
-        'user-ftp': os.getenv('USER-FTP'),
-        'password-ftp': os.getenv('PASSWORD-FTP'),
-        'path_clientes': os.getenv('PATH-CLIENTES'),
-        'path_estoque': os.getenv('PATH-ESTOQUE'),
-        'path_produto': os.getenv('PATH-PRODUTO'),
-        'path_vendas': os.getenv('PATH-VENDAS'),
+        'server_ftp_mccain': os.getenv('SERVER_FTP_MCCAIN'),
+        'user_ftp_mccain': os.getenv('USER_FTP_MCCAIN'),
+        'password_ftp_mccain': os.getenv('PASSWORD_FTP_MCCAIN'),
+        'path_clientes_mccain': os.getenv('PATH_CLIENTES_MCCAIN'),
+        'path_estoque_mccain': os.getenv('PATH_ESTOQUE_MCCAIN'),
+        'path_produto_mccain': os.getenv('PATH_PRODUTO_MCCAIN'),
+        'path_vendas_mccain': os.getenv('PATH_VENDAS_MCCAIN'),
     }
 
     unid_codigos = ['001', '002', '003']
@@ -89,19 +89,19 @@ def produtos():
         dataAtual = datetime.now().strftime("%Y-%m-%d")
         nomeArquivo = (f'PRODUTOSDUSNEI{unid_codigo}{dataAtual}')
         ws.title = dataAtual
-        diretorio = f'C:/Users/Windows/Documents/Python/mccain-automation/app/data/{dataAtual}'
+        diretorio = f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}'
         if not os.path.exists(diretorio):
             os.mkdir(diretorio, exist_ok=True)
         local_arquivo = os.path.join(
-            f'C:/Users/Windows/Documents/Python/mccain-automation/app/data/{dataAtual}/{nomeArquivo}.xlsx')
+            f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
 
 
-    with FTP(FTP_CONFIG['server-ftp']) as ftp:
-        ftp.login(user=FTP_CONFIG['user-ftp'], passwd=FTP_CONFIG['password-ftp'])
+    with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
+        ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])
 
-        remote_dir_path = os.path.join(FTP_CONFIG['path_produto'])
+        remote_dir_path = os.path.join(FTP_CONFIG['path_produto_mccain'])
 
         # try:
         #     ftp.mkd(remote_dir_path)
