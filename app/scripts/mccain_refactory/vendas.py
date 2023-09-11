@@ -6,28 +6,15 @@ import pandas as pd
 from ftplib import FTP
 from datetime import datetime
 from dotenv import load_dotenv
-from config import get_db_engine, log_data
+from conn import ftp_config, config
+
 
 load_dotenv()
-log_data()
+config.log_data()
 
 
 def vendas():
-    FTP_CONFIG = {
-        'server_ftp_mccain': os.getenv('SERVER_FTP_MCCAIN'),
-        'user_ftp_mccain': os.getenv('USER_FTP_MCCAIN'),
-        'password_ftp_mccain': os.getenv('PASSWORD_FTP_MCCAIN'),
-        'path_produto_mccain': os.getenv('PATH_PRODUTO_MCCAIN'),
-        'path_clientes_mccain': os.getenv('PATH_CLIENTES_MCCAIN'),
-        'path_clientes_sp_mccain': os.getenv('PATH_CLIENTES_SP_MCCAIN'),
-        'path_clientes_pr_mccain': os.getenv('PATH_CLIENTES_PR_MCCAIN'),
-        'path_estoque_mccain': os.getenv('PATH_ESTOQUE_MCCAIN'),
-        'path_estoque_sp_mccain': os.getenv('PATH_ESTOQUE_SP_MCCAIN'),
-        'path_estoque_pr_mccain': os.getenv('PATH_ESTOQUE_PR_MCCAIN'),
-        'path_vendas_mccain': os.getenv('PATH_VENDAS_MCCAIN'),
-        'path_vendas_SP_mccain': os.getenv('PATH_VENDAS_SP_MCCAIN'),
-        'path_vendas_PR_mccain': os.getenv('PATH_VENDAS_PR_MCCAIN'),
-    }
+    FTP_CONFIG = ftp_config.FTP_CONFIG
 
     unid_codigos = ['001', '002', '003']
 
