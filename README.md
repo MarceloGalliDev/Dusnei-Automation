@@ -28,4 +28,8 @@ Instalando bibliotecas
 
 
 #### Banco de Dados PostgreSQL
->python manage.py inspectdb municipios > models-script.py 
+> python manage.py inspectdb municipios > models-script.py
+
+#### Redis e Celery
+> iniciando worker
+- celery -A your_project_name worker --loglevel=info

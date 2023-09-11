@@ -11,29 +11,23 @@ from config import get_db_engine, log_data
 load_dotenv()
 log_data()
 
-def clientes_estado():
+def clientes():
     FTP_CONFIG = {
         'server_ftp_mccain': os.getenv('SERVER_FTP_MCCAIN'),
         'user_ftp_mccain': os.getenv('USER_FTP_MCCAIN'),
         'password_ftp_mccain': os.getenv('PASSWORD_FTP_MCCAIN'),
-        'path_produto_mccain': os.getenv('PATH_PRODUTO_MCCAIN'),
         'path_clientes_mccain': os.getenv('PATH_CLIENTES_MCCAIN'),
-        'path_clientes_sp_mccain': os.getenv('PATH_CLIENTES_SP_MCCAIN'),
-        'path_clientes_pr_mccain': os.getenv('PATH_CLIENTES_PR_MCCAIN'),
         'path_estoque_mccain': os.getenv('PATH_ESTOQUE_MCCAIN'),
-        'path_estoque_sp_mccain': os.getenv('PATH_ESTOQUE_SP_MCCAIN'),
-        'path_estoque_pr_mccain': os.getenv('PATH_ESTOQUE_PR_MCCAIN'),
+        'path_produto_mccain': os.getenv('PATH_PRODUTO_MCCAIN'),
         'path_vendas_mccain': os.getenv('PATH_VENDAS_MCCAIN'),
-        'path_vendas_sp_mccain': os.getenv('PATH_VENDAS_SP_MCCAIN'),
-        'path_vendas_pr_mccain': os.getenv('PATH_VENDAS_PR_MCCAIN'),
     }
 
-    cod_estados = ['PR','SP']
+    unid_codigos = ['001', '002', '003']
     
     conn = get_db_engine()
     ftp = FTP_CONFIG
 
-    for cod_estado in cod_estados:
+    for unid_codigo in unid_codigos:
         query = (f"""
             (
                 SELECT 
@@ -60,11 +54,11 @@ def clientes_estado():
                 LEFT JOIN movprodc AS mprc ON clie.clie_codigo = mprc.mprc_codentidade
                 LEFT JOIN vendedores AS vend ON clie.clie_vend_codigo = vend.vend_codigo
                 WHERE clie.clie_tipos NOT IN ('','IN','VE','FU','UN','NL')
-                AND clie.clie_ufexprg = '{cod_estado}'
                 AND clie.clie_endres NOT IN ('') 
                 AND muni.muni_nome NOT IN ('') 
                 AND clie.clie_rota_codigo NOT IN ('') 
-                AND clie.clie_cnpjcpf NOT IN ('0', '')
+                AND clie.clie_unid_codigo = '{unid_codigo}'
+                AND clie.clie_cnpjcpf NOT IN ('0','')
                 AND clie.clie_cepres NOT IN ('')
                 AND clie.clie_dtcad > '2023-01-01'
                 GROUP BY clie.clie_unid_codigo, clie.clie_codigo, clie.clie_nome, clie.clie_cnpjcpf, clie.clie_razaosocial, clie.clie_endres, clie.clie_endresnumero, clie.clie_bairrores, clie.clie_cepres, clie.clie_muni_codigo_res, muni.muni_codigo, muni.muni_nome, clie.clie_ufexprg, clie.clie_rota_codigo, clie.clie_ramoatividade, clie.clie_vend_codigo, clie.clie_vend_alternativos, vend.vend_nome, clie.clie_dtcad
@@ -108,7 +102,7 @@ def clientes_estado():
             ws.cell(row=index+2, column=9).value = (f'{segmentacion_global}')
 
         dataAtual = datetime.now().strftime("%Y-%m-%d")
-        nomeArquivo = (f'CLIENTESDUSNEI{cod_estado}{dataAtual}')
+        nomeArquivo = (f'CLIENTESDUSNEI{unid_codigo}{dataAtual}')
         ws.title = dataAtual
         diretorio = f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}'
         if not os.path.exists(diretorio):
@@ -122,8 +116,7 @@ def clientes_estado():
     # with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
     #     ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])
 
-    #     remote_dir_path_pr = os.path.join(FTP_CONFIG['path_clientes_pr_mccain'])
-    #     remote_dir_path_sp = os.path.join(FTP_CONFIG['path_clientes_sp_mccain'])
+    #     remote_dir_path = os.path.join(FTP_CONFIG['path_clientes_mccain'])
 
     #     # try:
     #     #     ftp.mkd(remote_dir_path)
@@ -132,26 +125,15 @@ def clientes_estado():
     #     #     print('Não foi possível criar a pasta, pode ser que já exista!')
 
     #     for arquivos_data in os.listdir(diretorio):
-    #         if 'CLIENTESDUSNEIPR' in arquivos_data:
+    #         if 'CLIENTES' in arquivos_data:
     #             file_path = os.path.join(diretorio, arquivos_data)
 
     #             if os.path.isfile(file_path):
     #                 with open(local_arquivo, 'rb') as local_file:
-    #                     remote_path = os.path.join(remote_dir_path_pr, arquivos_data)
+    #                     remote_path = os.path.join(remote_dir_path, arquivos_data)
     #                     ftp.storbinary(f"STOR {remote_path}", local_file)
     #             logging.info(
     #                 f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
-                
-    #         if 'CLIENTESDUSNEISP' in arquivos_data:
-    #             file_path = os.path.join(diretorio, arquivos_data)
-
-    #             if os.path.isfile(file_path):
-    #                 with open(local_arquivo, 'rb') as local_file:
-    #                     remote_path = os.path.join(remote_dir_path_sp, arquivos_data)
-    #                     ftp.storbinary(f"STOR {remote_path}", local_file)
-    #             logging.info(
-    #                 f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
-            
 
 if __name__ == "__main__":
-    clientes_estado()
+    clientes()
