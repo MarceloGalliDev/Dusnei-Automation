@@ -24,18 +24,18 @@ def vendas():
             query = (f"""
                 (
                     SELECT
-                    mprd.mprd_dcto_codigo AS doc_cod, 
-                    mprd.mprd_transacao AS transacao,
-                    clie.clie_cnpjcpf AS cnpj_cpf,
-                    clie.clie_codigo AS cod_clie,
-                    mprd.mprd_datamvto AS data,
-                    mprd.mprd_numerodcto AS nfe,
-                    prod.prod_codbarras AS cod_barras,
-                    prod.prod_codigo AS cod_prod,
-                    (mprd.mprd_qtde * prod.prod_pesoliq) AS quantity,
-                    mprd.mprd_valor AS amount,
-                    mprc.mprc_vend_codigo AS cod_vend,
-                    SUBSTRING(clie.clie_cepres, 1,5) ||'-'|| SUBSTRING(clie.clie_cepres, 6,3) AS cep
+                        mprd.mprd_dcto_codigo AS doc_cod, 
+                        mprd.mprd_transacao AS transacao,
+                        clie.clie_cnpjcpf AS cnpj_cpf,
+                        clie.clie_codigo AS cod_clie,
+                        mprd.mprd_datamvto AS data,
+                        mprd.mprd_numerodcto AS nfe,
+                        prod.prod_codbarras AS cod_barras,
+                        prod.prod_codigo AS cod_prod,
+                        (mprd.mprd_qtde * prod.prod_pesoliq) AS quantity,
+                        mprd.mprd_valor AS amount,
+                        mprc.mprc_vend_codigo AS cod_vend,
+                        SUBSTRING(clie.clie_cepres, 1,5) ||'-'|| SUBSTRING(clie.clie_cepres, 6,3) AS cep
                     FROM {table_name} AS mprd 
                     LEFT JOIN movprodc AS mprc ON mprd.mprd_operacao = mprc.mprc_operacao
                     LEFT JOIN produtos AS prod ON mprd.mprd_prod_codigo = prod.prod_codigo

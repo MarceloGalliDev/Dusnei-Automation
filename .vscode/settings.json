@@ -57,5 +57,6 @@
     "django-html": "html", // batisteo.vscode-django
     "javascript": "javascriptreact",
     "typescript": "typescriptreact"
-  }
+  },
+  "python.analysis.extraPaths": ["./log"]
 }

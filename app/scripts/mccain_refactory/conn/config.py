@@ -1,34 +1,34 @@
+# flake8: noqa
+# pylint: disable=all
+import logging
+import os
+import sys
 from sqlalchemy import create_engine, exc
 from dotenv import load_dotenv
-import os
-import logging
+
+
+sys.path.append('Z:/repositório/Dusnei-Automation/log')
+import log_config
+
 
 load_dotenv()
 
 
-def log_data():
-    for arquivo in os.listdir("Z:/repositório/Dusnei-Automation/log"): # noqa
-        if arquivo.endswith('.log'):
-            logging.info('Arquivo iniciado')
-    logging.basicConfig(
-        filename='log/data_mccain.log',
-        level=logging.INFO,
-        format='%(asctime)s %(message)s',
-        datefmt='%d/%m/%Y %I:%M:%S %p -',
-)# noqa
-
-
 def get_db_engine():
-    log_data()
+    logger = log_config.setup_logger('mccain_log.log')
     try:
         db_url = os.getenv('DUSNEI_URL')
         engine = create_engine(db_url)
         # Test connection
         with engine.connect() as connection:  # noqa: F841
-            logging.info('Conexão estabelecida!')
+            logger.info('Conexão estabelecida!')
             pass
-        logging.info('Banco de dados conectado!')
+        logger.info('Banco de dados conectado!')
         return engine
     except exc.SQLAlchemyError as e:
-        logging.info(f"Error: {e}")
+        logger.info(f"Error: {e}")
         return None
+
+
+if __name__ == "__main__":
+    get_db_engine()

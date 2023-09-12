@@ -34,9 +34,9 @@ def log_data(logger):
             logger.info(f'Arquivo de log encontrado: {arquivo}')
 
 
-if __name__ == "__main__":
-    mccain_logger = setup_logger('mccain_log.log')
-    brf_logger = setup_logger('brf_log.log')
+# if __name__ == "__main__":
+#     mccain_logger = setup_logger('mccain_log.log')
+#     brf_logger = setup_logger('brf_log.log')
 
-    log_data(mccain_logger)
-    log_data(brf_logger)
+#     log_data(mccain_logger)
+#     log_data(brf_logger)
