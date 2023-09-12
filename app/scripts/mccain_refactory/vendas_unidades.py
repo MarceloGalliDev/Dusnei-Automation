@@ -7,13 +7,17 @@ from ftplib import FTP
 from datetime import datetime
 from dotenv import load_dotenv
 from conn import ftp_config, config
+import sys
+sys.path.append('Z:/repositório/Dusnei-Automation/log')
+import log_config
 
 
 load_dotenv()
-config.log_data()
+
 
 
 def vendas():
+    logger = log_config.setup_logger('mccain_log.log')
     FTP_CONFIG = ftp_config.FTP_CONFIG
 
     unid_codigos = ['001', '002', '003']
@@ -44,14 +48,13 @@ def vendas():
                     AND mprd_unid_codigo IN ('{unid_codigo}')
                     AND prod.prod_marca IN ('MCCAIN','MCCAIN RETAIL')
                     AND mprd.mprd_dcto_codigo IN ('6666','6668','7335','7337','7338','7339','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318')
-                    AND mprd.mprd_datamvto >= '2023-08-01'
-                    AND mprd.mprd_datamvto <= '2023-08-31'
+                    AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '7 DAYS'
                 )  
             """)
-                    # AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '8 DAYS'
+                    # AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '7 DAYS'
             return pd.read_sql_query(query, conn)
 
-        conn = get_db_engine()
+        conn = config.get_db_engine()
         ftp = FTP_CONFIG
 
         wb = openpyxl.Workbook()
@@ -101,6 +104,7 @@ def vendas():
             f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
+        logger.info('Arquivo vendas_unidades.xlsx criado!')
 
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
@@ -116,7 +120,7 @@ def vendas():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logging.info(
+                logger.info(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
 
 

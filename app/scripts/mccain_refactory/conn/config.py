@@ -2,11 +2,10 @@
 # pylint: disable=all
 import logging
 import os
-import sys
 from sqlalchemy import create_engine, exc
 from dotenv import load_dotenv
 
-
+import sys
 sys.path.append('Z:/repositório/Dusnei-Automation/log')
 import log_config
 
