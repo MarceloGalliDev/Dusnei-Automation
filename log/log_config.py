@@ -23,7 +23,7 @@ def setup_logger(log_file_name):
     handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p -'))
 
     logger.addHandler(handler)
-    return logger
+    return loggera
 
 def log_data(logger):
     logger.info('Iniciando varredura de diretório para arquivos de log.')
