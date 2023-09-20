@@ -55,7 +55,7 @@ class Forca_De_Venda:
         processed_rows = []
         
         def sanitize_string_name(value, default_value, max_length):
-            if value is None or value == '':
+            if value is None:
                 return default_value.ljust(max_length)[:max_length].upper()
             return unidecode(value)[:max_length].ljust(max_length).upper()
 
@@ -74,40 +74,18 @@ class Forca_De_Venda:
             else:
                 cnpj_unid = '81894255000309'
             
-            cnpj_cliente = sanitize_string_number(row["cnpj_cpf"], '0'*14, 17)
-                                       
-            nome_gerente_bruta = row["nome_gerente"]
-            nome_supervisor_bruta = row["nome_supervisor"]
-            nome_vendedor_bruta = row["nome_vendedor"]
-            cod_gerente_bruta = row["cod_gerente"]
-            cod_supervisor_bruta = row["cod_supervisor"]
-            cod_vendedor_bruta = row["cod_vendedor"]
+            cnpj_cliente = row["cnpj_cpf"].zfill(14)
             
-            if (
-                nome_vendedor_bruta is not None or 
-                nome_vendedor_bruta != '' or
-                cod_vendedor_bruta is not None or
-                cod_vendedor_bruta != '' or
-                cod_vendedor_bruta != '000' or
-                cod_vendedor_bruta != '0000'
-            ):
-                cod_gerente = sanitize_string_number(cod_gerente_bruta, '0000', 14)
-                nome_gerente = sanitize_string_name(nome_gerente_bruta, 'INATIVADO', 49)
-                cod_supervisor = sanitize_string_number(cod_supervisor_bruta, '0000', 14)
-                nome_supervisor = sanitize_string_name(nome_supervisor_bruta, 'INATIVADO', 50)
-                cod_vendedor = sanitize_string_number(cod_vendedor_bruta, '0000', 20)
-                nome_vendedor = sanitize_string_name(nome_vendedor_bruta, 'INATIVADO', 50)
-            else:
-                nome_gerente = 'INATIVADO'
-                cod_gerente = '0000'
-                nome_supervisor = 'INATIVADO'
-                cod_supervisor = '0000'
-                nome_vendedor = 'INATIVADO'
-                cod_vendedor = '0000'
-            
+            nome_gerente = sanitize_string_name(row["nome_gerente"], 'ALVAROLUIZDEOLIVEIRAANDRADE', 50)
+            cod_gerente = sanitize_string_number(row["cod_gerente"], '0000', 13)
+            nome_supervisor = sanitize_string_name(row["nome_supervisor"], 'SEM SUPERVISOR', 50)
+            cod_supervisor = sanitize_string_number(row["cod_supervisor"], '0000', 13)
+            nome_vendedor = sanitize_string_name(row["nome_vendedor"], 'SEM VENDEDOR', 50)
+            cod_vendedor = sanitize_string_number(row["cod_vendedor"], '0000', 20)
+           
             espaco_branco1 = ' '*4
             
-            processed_row = (f'{caracter_adc}{cnpj_unid}{cnpj_cliente}{cod_gerente}{nome_gerente}{cod_supervisor}{nome_supervisor}{cod_vendedor}{nome_vendedor}')
+            processed_row = (f'{caracter_adc}{cnpj_unid}{cnpj_cliente}{espaco_branco1}{cod_gerente}{nome_gerente}{cod_supervisor}{nome_supervisor}{cod_vendedor}{nome_vendedor}')
             processed_rows.append(processed_row)
         logger.info('Query estoques OK!')
         logger.info('Processamento de dados estoques OK!')
