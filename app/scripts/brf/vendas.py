@@ -31,19 +31,20 @@ class Vendas:
                 mprd.mprd_numerodcto AS nfe,
                 prod.prod_codbarras AS cod_barras,
                 prod.prod_pesoliq AS peso,
-                prod.prod_codigo AS cod_prod,
+                mprd_prod_codigo AS cod_prod,
                 TO_CHAR(mprd.mprd_qtde, '00000000000999D9999') AS qtde,
                 TO_CHAR((mprd.mprd_valor / mprd.mprd_qtde), '00999D99') AS valor_unitario_2,
                 TO_CHAR(mprd.mprd_vlrunitario, '00999D99') AS valor_unitario,
                 mprc.mprc_vend_codigo AS cod_vend,
                 mprc.mprc_codentidade AS cod_clie,
                 mprd.mprd_dcto_codigo AS dcto_cod,
-                mprd.mprd_embcom AS embalagem_vend,
+                prun.prun_emb AS embalagem_vend,
                 SUBSTRING(clie.clie_cepres, 1,5) ||'-'|| SUBSTRING(clie.clie_cepres, 6,3) AS cep
             FROM {table_name} AS mprd
             LEFT JOIN movprodc AS mprc ON mprd.mprd_transacao = mprc.mprc_transacao
             LEFT JOIN produtos AS prod ON mprd.mprd_prod_codigo = prod.prod_codigo
             LEFT JOIN clientes AS clie ON mprc.mprc_codentidade = clie.clie_codigo
+            LEFT JOIN produn AS prun ON mprd.mprd_prod_codigo = prun_prod_codigo
             WHERE mprd_status = 'N'
             AND mprd_unid_codigo IN ({unid_values})
             AND prod.prod_marca IN ('BRF', 'BRF IN NATURA')
@@ -53,8 +54,9 @@ class Vendas:
             AND clie.clie_cepres NOT IN ('00000-000','','0','00000','00000000')
             AND clie.clie_cepres > '0'
             AND clie.clie_cepres NOT IN ('')
-            AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '7 DAYS'
+            AND mprd.mprd_datamvto > '2023-01-09'
         """)
+        # AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '7 DAYS'
         
         df = pd.read_sql_query(query, self.conn)
         return df
@@ -145,7 +147,9 @@ class Vendas:
         for unid_codigo in self.unid_codigos:
             tables = ['movprodd0122', 'movprodd0222', 'movprodd0322', 'movprodd0422', 'movprodd0522', 'movprodd0622', 'movprodd0722', 'movprodd0822', 'movprodd0922', 'movprodd1022', 'movprodd1122', 'movprodd1222', 'movprodd0123', 'movprodd0223', 'movprodd0323', 'movprodd0423', 'movprodd0523', 'movprodd0623', 'movprodd0723', 'movprodd0823', 'movprodd0923', 'movprodd1023',  'movprodd1123', 'movprodd1223']
             
-            df = pd.concat([self.vendas_query(table, self.conn, unid_codigo)for table in tables])
+            dfs = [self.vendas_query(table, self.conn, unid_codigo) for table in tables]
+            dfs = [df.dropna(axis=1, how='all') for df in dfs]
+            df = pd.concat(dfs)
             df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
             
             processed_rows = self.process_rows(df, unid_codigo)

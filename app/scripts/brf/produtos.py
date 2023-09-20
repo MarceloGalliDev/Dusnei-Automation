@@ -54,10 +54,10 @@ class Produtos:
                         
             registro = 'V'
             # cnpj_forn = row["cnpj_fornecedor"].zfill(14) if row["cnpj_fornecedor"] else '0'*14
-            cnpj_forn = ('1838723010513')[:18].ljust(18)
+            cnpj_forn = ('01838723010513')[:18].ljust(18)
             # razao_forn = (row["razao_fornecedor"] or "")[:30].ljust(30)
-            razao_forn = ('BRF S.A.')[:30].ljust(30)
-            cod_produto = (row["cod_prod"] or "")[:14].ljust(14)
+            razao_forn = ('BRF S.A.')[:29].ljust(29)
+            cod_produto = (row["cod_prod"] or "")[:15].ljust(15)
             
             if (row["embalagem"] != "KG"):
                 tipo_emb = "1"
