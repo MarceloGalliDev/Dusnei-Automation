@@ -1,6 +1,5 @@
 # flake8: noqa
 import os
-import logging
 import openpyxl
 import pandas as pd
 from ftplib import FTP

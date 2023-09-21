@@ -1,6 +1,5 @@
 # flake8: noqa
 import os
-import logging
 import openpyxl
 import pandas as pd
 from ftplib import FTP
@@ -109,7 +108,7 @@ def estoques_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_pr, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logging.info(
+                logger.info(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
                 
             if 'ESTOQUEDUSNEISP' in arquivos_data:
@@ -119,7 +118,7 @@ def estoques_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_sp, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logging.info(
+                logger.info(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
 
 

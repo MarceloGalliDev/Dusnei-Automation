@@ -1,18 +1,21 @@
 # flake8: noqa
 import os
-import logging
 import openpyxl
 import pandas as pd
 from ftplib import FTP
 from datetime import datetime
 from dotenv import load_dotenv
-from config import get_db_engine, log_data
+from conn import ftp_config, config
+import sys
+sys.path.append('Z:/repositório/Dusnei-Automation/log')
+import log_config
+
 
 load_dotenv()
-log_data()
 
 
 def estoques():
+    logger = log_config.setup_logger('mccain_log.log')
     FTP_CONFIG = {
         'server_ftp_mccain': os.getenv('SERVER_FTP_MCCAIN'),
         'user_ftp_mccain': os.getenv('USER_FTP_MCCAIN'),
@@ -25,7 +28,7 @@ def estoques():
 
     unid_codigos = ['001', '002', '003']
 
-    conn = get_db_engine()
+    conn = config.get_db_engine()
     ftp = FTP_CONFIG
 
     for unid_codigo in unid_codigos:
@@ -83,19 +86,19 @@ def estoques():
         wb.save(local_arquivo)
 
 
-    # with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
-    #     ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])
-    #     remote_dir_path = os.path.join(FTP_CONFIG['path_estoque_mccain'])
+    with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
+        ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])
+        remote_dir_path = os.path.join(FTP_CONFIG['path_estoque_mccain'])
         
-    #     for arquivos_data in os.listdir(diretorio):
-    #         if 'ESTOQUE' in arquivos_data:
-    #             file_path = os.path.join(diretorio, arquivos_data)
-    #             if os.path.isfile(file_path):
-    #                 with open(local_arquivo, 'rb') as local_file:
-    #                     remote_path = os.path.join(remote_dir_path, arquivos_data)
-    #                     ftp.storbinary(f"STOR {remote_path}", local_file)
-    #             logging.info(
-    #                 f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
+        for arquivos_data in os.listdir(diretorio):
+            if 'ESTOQUE' in arquivos_data:
+                file_path = os.path.join(diretorio, arquivos_data)
+                if os.path.isfile(file_path):
+                    with open(local_arquivo, 'rb') as local_file:
+                        remote_path = os.path.join(remote_dir_path, arquivos_data)
+                        ftp.storbinary(f"STOR {remote_path}", local_file)
+                logger.info(
+                    f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
 
 
 if __name__ == "__main__":

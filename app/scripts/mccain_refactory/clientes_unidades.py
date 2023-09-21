@@ -130,7 +130,7 @@ def clientes():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logging.info(
+                logger.info(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
 
 if __name__ == "__main__":
