@@ -1,6 +1,5 @@
 # flake8: noqa
 import os
-import logging
 import openpyxl
 import pandas as pd
 from ftplib import FTP
@@ -11,26 +10,13 @@ import sys
 sys.path.append('Z:/repositório/Dusnei-Automation/log')
 import log_config
 
+
 load_dotenv()
 
 
-
 def vendas_estado():
-    FTP_CONFIG = {
-        'server-ftp': os.getenv('SERVER-FTP'),
-        'user-ftp': os.getenv('USER-FTP'),
-        'password-ftp': os.getenv('PASSWORD-FTP'),
-        'path_produto': os.getenv('PATH-PRODUTO'),
-        'path_clientes': os.getenv('PATH-CLIENTES'),
-        'path_clientes_sp': os.getenv('PATH-CLIENTES-SP'),
-        'path_clientes_pr': os.getenv('PATH-CLIENTES-PR'),
-        'path_estoque': os.getenv('PATH-ESTOQUE'),
-        'path_estoque_sp': os.getenv('PATH-ESTOQUE-SP'),
-        'path_estoque_pr': os.getenv('PATH-ESTOQUE-PR'),
-        'path_vendas': os.getenv('PATH-VENDAS'),
-        'path_vendas_sp': os.getenv('PATH-VENDAS-SP'),
-        'path_vendas_pr': os.getenv('PATH-VENDAS-PR'),
-    }
+    logger = log_config.setup_logger('mccain_log.log')
+    FTP_CONFIG = ftp_config.FTP_CONFIG
 
     cod_estados = ['PR','SP']
 
@@ -70,7 +56,7 @@ def vendas_estado():
             return pd.read_sql_query(query, conn)
 
 
-        conn = get_db_engine()
+        conn = config.get_db_engine()
         ftp = FTP_CONFIG
 
         wb = openpyxl.Workbook()
@@ -130,6 +116,7 @@ def vendas_estado():
             f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
+        logger.info('Arquivo vendas_estados.xlsx criado!')
 
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
@@ -152,7 +139,7 @@ def vendas_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_pr, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logging.info(
+                logger.info(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
                 
             if 'VENDASDUSNEISP' in arquivos_data:
@@ -162,7 +149,7 @@ def vendas_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_sp, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logging.info(
+                logger.info(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
 
 

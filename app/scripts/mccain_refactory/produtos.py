@@ -14,7 +14,7 @@ import log_config
 load_dotenv()
 
 
-def estoques():
+def produtos():
     logger = log_config.setup_logger('mccain_log.log')
     FTP_CONFIG = ftp_config.FTP_CONFIG
 
@@ -26,23 +26,23 @@ def estoques():
     for unid_codigo in unid_codigos:
         query = (f"""
             (
-                SELECT
-                    prun.prun_estoque1 AS estoque,
-                    (prun.prun_estoque1 * prod.prod_pesoliq) AS qtde,
+                SELECT 
                     prun.prun_unid_codigo AS unidade,
                     prun.prun_ativo as tipo,
                     prun.prun_prod_codigo AS prod_codigo,
                     prod.prod_codbarras AS cod_barras,
-                    prod.prod_marca AS marca,
-                    prod.prod_codigo AS cod_prod
-                FROM produn AS prun
+                    prod.prod_pesoliq AS prod_pesoliq,
+                    prun.prun_emb AS embalagem,
+                    prod.prod_forn_codigo AS cod_fornecedor,
+                    TO_CHAR(prod.prod_codigo, '00999') AS cod_prod,
+                    prod.prod_descricao AS produto
+                FROM produn AS prun 
                 LEFT JOIN produtos AS prod ON prun.prun_prod_codigo = prod.prod_codigo
-                WHERE prun.prun_bloqueado = 'N'
+                WHERE prun.prun_bloqueado = 'N' 
                 AND prun.prun_unid_codigo = '{unid_codigo}'
                 AND prun.prun_ativo = 'S'
-                AND prun.prun_estoque1 > 0
                 AND prod.prod_marca IN ('MCCAIN','MCCAIN RETAIL')
-            )
+            )  
         """)
 
         df = pd.read_sql_query(query, conn)
@@ -50,24 +50,39 @@ def estoques():
         wb = openpyxl.Workbook()
         ws = wb.active
 
-        dataAtualEstoque = datetime.now().strftime("%Y-%m-%d")
         ws['A1'] = ('Code')
-        ws['B1'] = ('Quantity')
-        ws['C1'] = ('Stock Date')
-        ws['D1'] = ('Expiration Date')
+        ws['B1'] = ('Nome/Descrição')
+        ws['C1'] = ('Quantidade x Peso')
+        ws['D1'] = ('Embalagem')
+        ws['E1'] = ('EAN')
+        ws['F1'] = ('Cod do Fabricante')
         for index, row in df.iterrows():
-            code = row["cod_prod"]
-            quantity = row["qtde"]
-            stockDate = dataAtualEstoque
-            expirationDate = ''
+            codProduto = row["cod_prod"].zfill(5)
+            nomeProduto = row["produto"]
+            pesoEmb = row["prod_pesoliq"]
+            embalagem = row["embalagem"]
+            if embalagem == 'CX':
+                embalagem = 'CAIXA'
+            elif embalagem == 'PC':
+                embalagem = 'PACOTE'
+            elif embalagem == 'UN':
+                embalagem = 'UNIDADE'
+            elif embalagem == 'KG':
+                embalagem = 'KILOGRAMAS'
+            else:
+                embalagem = 'OUTROS'
+            codBarras = row["cod_barras"].zfill(13)
+            codFornecedor = row["cod_fornecedor"]
 
-            ws.cell(row=index+2, column=1).value = (f'{code:.0f}')
-            ws.cell(row=index+2, column=2).value = (f'{quantity:.2f}')
-            ws.cell(row=index+2, column=3).value = (f'{stockDate}')
-            ws.cell(row=index+2, column=4).value = (f'{expirationDate}')
+            ws.cell(row=index+2, column=1).value = (f'{codProduto}')
+            ws.cell(row=index+2, column=2).value = (f'{nomeProduto}')
+            ws.cell(row=index+2, column=3).value = (f'{pesoEmb:.2f}')
+            ws.cell(row=index+2, column=4).value = (f'{embalagem}')
+            ws.cell(row=index+2, column=5).value = (f'{codBarras}')
+            ws.cell(row=index+2, column=6).value = (f'{codFornecedor:.0f}')
 
         dataAtual = datetime.now().strftime("%Y-%m-%d")
-        nomeArquivo = (f'ESTOQUEDUSNEI{unid_codigo}{dataAtual}')
+        nomeArquivo = (f'PRODUTOSDUSNEI{unid_codigo}{dataAtual}')
         ws.title = dataAtual
         diretorio = f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}'
         if not os.path.exists(diretorio):
@@ -76,16 +91,24 @@ def estoques():
             f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
-        logger.info('Arquivo estoques_unidades.xlsx criado!')
+        logger.info('Arquivo produtos.xlsx criado!')
 
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
         ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])
-        remote_dir_path = os.path.join(FTP_CONFIG['path_estoque_mccain'])
-        
+
+        remote_dir_path = os.path.join(FTP_CONFIG['path_produto_mccain'])
+
+        # try:
+        #     ftp.mkd(remote_dir_path)
+        #     print(f'Diretório {remote_dir_path} criado!')
+        # except Exception as e:
+        #     print('Não foi possível criar a pasta, pode ser que já exista!')
+
         for arquivos_data in os.listdir(diretorio):
-            if 'ESTOQUE' in arquivos_data:
+            if 'PRODUTOS' in arquivos_data:
                 file_path = os.path.join(diretorio, arquivos_data)
+
                 if os.path.isfile(file_path):
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path, arquivos_data)
@@ -95,4 +118,4 @@ def estoques():
 
 
 if __name__ == "__main__":
-    estoques()
+    produtos()

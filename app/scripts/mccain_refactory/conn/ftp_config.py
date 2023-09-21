@@ -15,6 +15,6 @@ FTP_CONFIG = {
     'path_estoque_sp_mccain': os.getenv('PATH_ESTOQUE_SP_MCCAIN'),
     'path_estoque_pr_mccain': os.getenv('PATH_ESTOQUE_PR_MCCAIN'),
     'path_vendas_mccain': os.getenv('PATH_VENDAS_MCCAIN'),
-    'path_vendas_SP_mccain': os.getenv('PATH_VENDAS_SP_MCCAIN'),
-    'path_vendas_PR_mccain': os.getenv('PATH_VENDAS_PR_MCCAIN'),
+    'path_vendas_sp_mccain': os.getenv('PATH_VENDAS_SP_MCCAIN'),
+    'path_vendas_pr_mccain': os.getenv('PATH_VENDAS_PR_MCCAIN'),
 }
