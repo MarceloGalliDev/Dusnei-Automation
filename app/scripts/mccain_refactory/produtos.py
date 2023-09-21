@@ -91,7 +91,7 @@ def produtos():
             f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
-        logger.info('Arquivo produtos.xlsx criado!')
+    logger.info('Arquivo produtos.xlsx criado!')
 
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:

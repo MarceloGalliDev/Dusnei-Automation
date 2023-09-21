@@ -1,20 +1,4 @@
-# flake8: noqa
-from clientes import clientes
-from estoques import estoques
-from produtos import produtos
-from clientes_estado import clientes_estado 
-from estoques_estado import estoques_estado
-from vendas_estado_arquivo_concat_pr import vendas_estado as vendas_estado_arquivo_concat_pr
-from vendas_estado_arquivo_concat_sp import vendas_estado as vendas_estado_arquivo_concat_sp
-from vendas_estado_arquivo_unico_pr import vendas_estado as vendas_estado_arquivo_unico_pr
-from vendas_estado_arquivo_unico_sp import vendas_estado as vendas_estado_arquivo_unico_sp
-from vendas_arquivo_001 import vendas as vendas001
-from vendas_arquivo_002 import vendas as vendas002
-from vendas_arquivo_003 import vendas as vendas003
-
-
 import time
-
 import ctypes
 import threading
 

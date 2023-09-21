@@ -86,7 +86,7 @@ def estoques_estado():
             f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
-        logger.info('Arquivo estoques_estados.xlsx criado!')
+    logger.info('Arquivo estoques_estados.xlsx criado!')
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
         ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])

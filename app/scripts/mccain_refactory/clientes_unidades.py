@@ -108,7 +108,7 @@ def clientes():
             f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
-        logger.info('Arquivo clientes_unidades.xlsx criado!')
+    logger.info('Arquivo clientes_unidades.xlsx criado!')
 
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:

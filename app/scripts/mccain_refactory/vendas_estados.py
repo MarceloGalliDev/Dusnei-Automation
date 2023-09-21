@@ -77,7 +77,8 @@ def vendas_estado():
             'movprodd1223'
         ]
 
-        df = pd.concat([vendas_query(table, conn, cod_estado)for table in tables])
+        filtered_dfs = [df.dropna(how='all', axis=1) for df in [vendas_query(table, conn, cod_estado) for table in tables]]
+        df = pd.concat(filtered_dfs)
 
         ws['A1'] = ('systemId')
         ws['B1'] = ('Code')
@@ -116,7 +117,7 @@ def vendas_estado():
             f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
-        logger.info('Arquivo vendas_estados.xlsx criado!')
+    logger.info('Arquivo vendas_estados.xlsx criado!')
 
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
