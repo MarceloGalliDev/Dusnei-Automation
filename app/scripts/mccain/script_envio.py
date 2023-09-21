@@ -37,7 +37,7 @@ def envio_automatico():
     hwnd = ctypes.windll.user32.FindWindowW(None, "Automação McCain")
     if hwnd != 0:
         ctypes.windll.user32.SendMessageW(hwnd, 0x0010, 0, 0)
-    
-    
+
+
 if __name__ == "__main__":
     envio_automatico()
