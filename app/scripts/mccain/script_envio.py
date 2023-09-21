@@ -1,6 +1,15 @@
 import time
 import ctypes
 import threading
+from mccain import (
+    clientes_estados,
+    clientes_unidades,
+    estoques_unidades,
+    estoques_estados,
+    produtos_totais,
+    vendas_estados,
+    vendas_unidades
+)
 
 
 MB_OK = 0x0
@@ -12,19 +21,14 @@ def show_message_box():
 
 
 def envio_automatico():
-    clientes()
-    estoques()
-    produtos()
-    vendas001()
-    vendas002()
-    vendas003()
-    clientes_estado()
-    vendas_estado_arquivo_concat_pr()
-    vendas_estado_arquivo_concat_sp()
-    vendas_estado_arquivo_unico_pr()
-    vendas_estado_arquivo_unico_sp()
-    estoques_estado()
-   
+    clientes_estados.clientes_estado()
+    clientes_unidades.clientes()
+    estoques_estados.estoques_estado()
+    estoques_unidades.estoques()
+    produtos_totais.produtos()
+    vendas_estados.vendas_estado()
+    vendas_unidades.vendas()
+
     t = threading.Thread(target=show_message_box)
     t.start
 
