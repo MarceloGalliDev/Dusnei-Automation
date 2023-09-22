@@ -8,7 +8,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from conn import ftp_config, config
 import sys
-sys.path.append('Z:/repositório/Dusnei-Automation/log')
+sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))
 import log_config
 
 
@@ -101,11 +101,11 @@ def clientes():
         dataAtual = datetime.now().strftime("%Y-%m-%d")
         nomeArquivo = (f'CLIENTESDUSNEI{unid_codigo}{dataAtual}')
         ws.title = dataAtual
-        diretorio = f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}'
+        diretorio = f'{os.getenv("DUSNEI_DATA_DIRECTORY_MCCAIN")}/{dataAtual}'
         if not os.path.exists(diretorio):
             os.mkdir(diretorio)
         local_arquivo = os.path.join(
-            f'Z:/repositório/Dusnei-Automation/data_send/mccain/{dataAtual}/{nomeArquivo}.xlsx')
+            f'{os.getenv("DUSNEI_DATA_DIRECTORY_MCCAIN")}/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
     logger.info('Arquivo clientes_unidades.xlsx criado!')
