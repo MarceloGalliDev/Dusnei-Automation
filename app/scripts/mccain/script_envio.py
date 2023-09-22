@@ -1,15 +1,14 @@
+# pylint: disable=all
 import time
 import ctypes
 import threading
-from mccain import (
-    clientes_estados,
-    clientes_unidades,
-    estoques_unidades,
-    estoques_estados,
-    produtos_totais,
-    vendas_estados,
-    vendas_unidades
-)
+import clientes_estados
+import clientes_unidades
+import estoques_unidades
+import estoques_estados
+import produtos_totais
+import vendas_estados
+import vendas_unidades
 
 
 MB_OK = 0x0
