@@ -41,10 +41,10 @@ def vendas_estado():
                         prod.prod_marca AS marca,
                         SUBSTRING(clie.clie_cepres, 1,5) ||'-'|| SUBSTRING(clie.clie_cepres, 6,3) AS cep
                     FROM {table_name} AS mprd 
-                    LEFT JOIN movprodc AS mprc ON mprd.mprd_operacao = mprc.mprc_operacao
+                    LEFT JOIN movprodc AS mprc ON mprd.mprd_transacao = mprc.mprc_transacao
                     LEFT JOIN produtos AS prod ON mprd.mprd_prod_codigo = prod.prod_codigo
                     LEFT JOIN clientes AS clie ON mprc.mprc_codentidade = clie.clie_codigo
-                    WHERE mprd_status = 'N' 
+                    WHERE mprd.mprd_status = 'N' 
                     AND prod.prod_marca IN ('MCCAIN','MCCAIN RETAIL')
                     AND mprd.mprd_dcto_codigo IN ('6666','6668','7335','7337','7338','7339','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318')
                     AND mprc.mprc_uf = '{cod_estado}'
