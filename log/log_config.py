@@ -1,8 +1,10 @@
 import os
 import logging
+from dotenv import load_dotenv
+load_dotenv()
 
 # Diretório onde os arquivos de log serão armazenados
-log_dir = 'Z:/repositório/Dusnei-Automation/log'
+log_dir = os.getenv('DUSNEI_LOG_DIRECTORY')
 
 # Certifique-se de que o diretório exista
 if not os.path.exists(log_dir):

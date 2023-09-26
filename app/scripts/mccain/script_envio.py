@@ -9,6 +9,8 @@ import estoques_estados
 import produtos_totais
 import vendas_estados
 import vendas_unidades
+from dotenv import load_dotenv
+load_dotenv()
 
 
 MB_OK = 0x0

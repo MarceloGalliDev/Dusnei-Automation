@@ -4,17 +4,17 @@ import logging
 import os
 from sqlalchemy import create_engine, exc
 from dotenv import load_dotenv
-
 import sys
-sys.path.append('Z:/repositório/Dusnei-Automation/log')
-import log_config
+sys.path.append('D:/Python/Dusnei-Automation')
+
+from log.log_config import setup_logger
 
 
 load_dotenv()
 
 
 def get_db_engine():
-    logger = log_config.setup_logger('mccain_log.log')
+    logger = setup_logger('mccain_log.log')
     try:
         db_url = os.getenv('DUSNEI_URL')
         engine = create_engine(db_url)
