@@ -46,7 +46,7 @@ def vendas():
                     AND mprd_unid_codigo IN ('{unid_codigo}')
                     AND prod.prod_marca IN ('MCCAIN','MCCAIN RETAIL')
                     AND mprd.mprd_dcto_codigo IN ('6666','6668','7335','7337','7338','7339','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318')
-                    AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '7 DAYS'
+                    AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '10 DAYS'
                 )  
             """)
                     # AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '7 DAYS'
