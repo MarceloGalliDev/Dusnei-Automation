@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 from conn import DatabaseConnection
 from unidecode import unidecode
 
+load_dotenv()
+
 class Forca_De_Venda:
     def __init__(self):
         load_dotenv()

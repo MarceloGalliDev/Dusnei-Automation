@@ -9,6 +9,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 from conn import DatabaseConnection
 
+load_dotenv()
+
 class Estoques:
     def __init__(self):
         load_dotenv()

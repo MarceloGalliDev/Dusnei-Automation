@@ -9,6 +9,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from conn import DatabaseConnection
 
+load_dotenv()
 
 class Produtos:
     def __init__(self):

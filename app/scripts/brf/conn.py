@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from loguru import logger
 import os
 
+load_dotenv()
 
 class DatabaseConnection:
     def __init__(self):
@@ -15,7 +16,7 @@ class DatabaseConnection:
 
     def initialize_logging(self):
         logger.add(
-            sink='Z:/repositório/Dusnei-Automation/log/log_{time:YYYY-MM-DD}.log', 
+            sink='D:/Python/Dusnei-Automation/log/log_{time:YYYY-MM-DD}.log', 
             level='INFO', 
             rotation='1 day',
             format='{time:YYYY-MM-DD} | {function}: {message}'

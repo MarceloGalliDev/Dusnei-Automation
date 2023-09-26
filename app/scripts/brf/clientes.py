@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from conn import DatabaseConnection
 from unidecode import unidecode
 
+load_dotenv()
 
 class Clientes:
     def __init__(self):
