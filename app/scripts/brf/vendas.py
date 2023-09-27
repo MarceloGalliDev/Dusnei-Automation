@@ -150,8 +150,17 @@ class Vendas:
             
             dfs = [self.vendas_query(table, self.conn, unid_codigo) for table in tables]
             dfs = [df.dropna(axis=1, how='all') for df in dfs]
-            df = pd.concat(dfs)
+            df = pd.concat(dfs, ignore_index=True)
             df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
+            df.drop_duplicates(inplace=True)
+            
+            # df = pd.DataFrame()
+            # for table in tables:
+            #     dfs = self.vendas_query(table, self.conn, unid_codigo)
+            #     dfs.dropna(axis=1, how='all', inplace=True)
+            #     df = pd.concat([df, dfs], ignore_index=True)
+    
+            # df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
             
             processed_rows = self.process_rows(df, unid_codigo)
             data_atual = datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
