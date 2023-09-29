@@ -16,7 +16,7 @@ class DatabaseConnection:
 
     def initialize_logging(self):
         logger.add(
-            sink='D:/Python/Dusnei-Automation/log/log_{time:YYYY-MM-DD}.log', 
+            sink= f'{self.DUSNEI_LOG_DIRECTORY}' + '/log_{time:YYYY-MM-DD}.log', 
             level='INFO', 
             rotation='1 day',
             format='{time:YYYY-MM-DD} | {function}: {message}'

@@ -20,8 +20,9 @@ class ReportSender:
         self.envio_email = envio_email.Envio_Email()
 
     def send_reports(self):
+        path_brf = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
         data_pasta = datetime.now().strftime("%Y-%m-%d")
-        directory_path = f'D:/Python/Dusnei-Automation/data_send/brf/{data_pasta}'
+        directory_path = f'{path_brf}/{data_pasta}'
         
         # Verifica se o diretório existe
         if os.path.exists(directory_path):
@@ -48,7 +49,7 @@ class ReportSender:
                 logger.info("Todos os arquivos foram apagados.")
         else:
             logger.info("O diretório não existe.")
-        
+
         self._connection()
         self._send_estoque()
         self._send_produtos()

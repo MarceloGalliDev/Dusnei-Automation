@@ -24,10 +24,10 @@ class Produtos:
         else:
             unid_values = f"'{unid_codigo}'"
         query = (f"""
-            SELECT DISTINCT ON (prun_prod_codigo),
+            SELECT 
                 prun.prun_unid_codigo AS unidade,
                 prun.prun_ativo as tipo,
-                prun.prun_prod_codigo AS prod_codigo,
+                prun.prun_prod_codigo::TEXT AS prod_codigo,
                 prod.prod_codbarras AS cod_barras,
                 prod.prod_marca AS marca,
                 TO_CHAR(prod.prod_codigo, '00999') AS cod_prod,
@@ -37,7 +37,7 @@ class Produtos:
                 prod.prod_descricao AS produto,
                 prun.prun_estoque1 AS estoque1,
                 prod.prod_status AS status_prod,
-                prod.prod_forn_codigo AS cod_fornecedor
+                prod.prod_forn_codigo::TEXT AS cod_fornecedor
                 FROM produn AS prun 
                 LEFT JOIN produtos AS prod ON prun.prun_prod_codigo = prod.prod_codigo
                 LEFT JOIN fornecedores AS forn ON prod.prod_forn_codigo = forn.forn_codigo

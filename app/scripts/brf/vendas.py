@@ -72,7 +72,7 @@ class Vendas:
             AND clie.clie_cepres NOT IN ('00000-000','','0','00000','00000000')
             AND clie.clie_cepres > '0'
             AND clie.clie_cepres NOT IN ('')
-            AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '7 DAYS'
+            AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '10 DAYS'
         """)
             # AND mprd.mprd_datamvto > '2023-01-09'
         
@@ -175,10 +175,6 @@ class Vendas:
 
             processed_rows = self.process_rows(df, unid_codigo)
 
-            # Debug: Print processed_rows
-            logger.debug("Processed Rows:")
-            pprint(processed_rows[:10])
-            
             # df = pd.DataFrame()
             # for table in tables:
             #     dfs = self.vendas_query(table, self.conn, unid_codigo)
