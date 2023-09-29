@@ -4,6 +4,8 @@ import os
 import time
 import openpyxl
 import pandas as pd
+from typing import List
+from pprint import pprint
 from loguru import logger
 from datetime import datetime
 from dotenv import load_dotenv
@@ -17,6 +19,17 @@ class Vendas:
         self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
         self.unid_codigos = ["001", "002", ['003', '010']]
         self.conn = DatabaseConnection.get_db_engine(self)
+        
+    def generate_sql_query(self) -> List[str]:
+        current_month = f"{datetime.now().month:02}"
+        current_year = datetime.now().year % 100  # Get the last two digits of the year
+
+        last_month = f"{(datetime.now().month - 1) % 12:02}"
+        last_year = current_year if datetime.now().month > 1 else current_year - 1
+
+        tables = [f"movprodd{last_month}{last_year}", f"movprodd{current_month}{current_year}"]
+
+        return tables
    
     def vendas_query(self, table_name, conn, unid_codigo):
         if isinstance(unid_codigo, list):
@@ -45,7 +58,11 @@ class Vendas:
             LEFT JOIN movprodc AS mprc ON mprd.mprd_transacao = mprc.mprc_transacao
             LEFT JOIN produtos AS prod ON mprd.mprd_prod_codigo = prod.prod_codigo
             LEFT JOIN clientes AS clie ON mprc.mprc_codentidade = clie.clie_codigo
-            LEFT JOIN produn AS prun ON mprd.mprd_prod_codigo = prun_prod_codigo
+            LEFT JOIN (
+                SELECT DISTINCT ON (prun_prod_codigo) prun_prod_codigo, prun_emb
+                FROM produn
+                ORDER BY prun_prod_codigo, prun_emb
+            ) AS prun ON mprd.mprd_prod_codigo = prun.prun_prod_codigo
             WHERE mprd_status = 'N'
             AND mprd_unid_codigo IN ({unid_values})
             AND prod.prod_marca IN ('BRF', 'BRF IN NATURA')
@@ -91,12 +108,13 @@ class Vendas:
                 if row['valor_unitario'].strip() == '00000.00'
                 else row['valor_unitario'].strip()
             )
-            
+
             cod_vend = row['cod_vend'].zfill(4)            
             tipo_doc = 'B' if dcto_cod in ['6890', '7267'] else 'N'
             cep = row['cep']
+
             tipo_unid = '0002' if row['embalagem_vend'] == 'KG' else '0001'
-                            
+
             espaco_branco1 = ' '*4
             espaco_branco2 = ' '*14
             espaco_branco3 = ' '
@@ -145,14 +163,21 @@ class Vendas:
         
         
     def vendas(self):
+        get_tables_query = self.generate_sql_query()
         for unid_codigo in self.unid_codigos:
-            tables = ['movprodd0122', 'movprodd0222', 'movprodd0322', 'movprodd0422', 'movprodd0522', 'movprodd0622', 'movprodd0722', 'movprodd0822', 'movprodd0922', 'movprodd1022', 'movprodd1122', 'movprodd1222', 'movprodd0123', 'movprodd0223', 'movprodd0323', 'movprodd0423', 'movprodd0523', 'movprodd0623', 'movprodd0723', 'movprodd0823', 'movprodd0923', 'movprodd1023',  'movprodd1123', 'movprodd1223']
+            tables = get_tables_query
+            # tables = ['movprodd0122', 'movprodd0222', 'movprodd0322', 'movprodd0422', 'movprodd0522', 'movprodd0622', 'movprodd0722', 'movprodd0822', 'movprodd0922', 'movprodd1022', 'movprodd1122', 'movprodd1222', 'movprodd0123', 'movprodd0223', 'movprodd0323', 'movprodd0423', 'movprodd0523', 'movprodd0623', 'movprodd0723', 'movprodd0823', 'movprodd0923', 'movprodd1023',  'movprodd1123', 'movprodd1223']
             
             dfs = [self.vendas_query(table, self.conn, unid_codigo) for table in tables]
             dfs = [df.dropna(axis=1, how='all') for df in dfs]
             df = pd.concat(dfs, ignore_index=True)
             df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
-            df.drop_duplicates(inplace=True)
+
+            processed_rows = self.process_rows(df, unid_codigo)
+
+            # Debug: Print processed_rows
+            logger.debug("Processed Rows:")
+            pprint(processed_rows[:10])
             
             # df = pd.DataFrame()
             # for table in tables:
@@ -172,3 +197,4 @@ class Vendas:
 if __name__ == "__main__":
     db_vendas = Vendas()
     db_vendas.vendas()
+

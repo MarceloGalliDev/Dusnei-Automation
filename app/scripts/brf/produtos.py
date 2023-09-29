@@ -24,7 +24,7 @@ class Produtos:
         else:
             unid_values = f"'{unid_codigo}'"
         query = (f"""
-            SELECT 
+            SELECT DISTINCT ON (prun_prod_codigo),
                 prun.prun_unid_codigo AS unidade,
                 prun.prun_ativo as tipo,
                 prun.prun_prod_codigo AS prod_codigo,
