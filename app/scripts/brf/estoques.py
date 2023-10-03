@@ -59,7 +59,7 @@ class Estoques:
                 cnpj_unid = '81894255000309'
 
             cod_barras = row['cod_barras'].zfill(13)
-            estoque = row['qtde'].strip()
+            estoque = row['estoque'].strip()
             embalagem = row['embalagem']
             if embalagem != 'KG':
                 tipoUnid = "0001"
