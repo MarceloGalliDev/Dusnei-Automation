@@ -43,9 +43,7 @@ class Produtos:
                 LEFT JOIN fornecedores AS forn ON prod.prod_forn_codigo = forn.forn_codigo
                 WHERE prun.prun_bloqueado = 'N' 
                 AND prun.prun_unid_codigo IN ({unid_values})
-                AND prun.prun_ativo = 'S'
                 AND prod.prod_marca IN ('BRF','BRF IN NATURA')
-                AND prod.prod_status = 'N'
         """)
         return pd.read_sql_query(query, conn)
 
@@ -72,7 +70,7 @@ class Produtos:
                 cod_barras_tipo = "1"
             
             nome_produto = (row["produto"] or "")[:100].ljust(100)
-            razao_forn2 = (row["razao_fornecedor"] or "")[:40].ljust(40)
+            razao_forn2 = ('BRF S.A.')[:40].ljust(40)
             estoque_qtde = row["estoque1"]
             status_prod = "A" if estoque_qtde > 0 else "I"
 
