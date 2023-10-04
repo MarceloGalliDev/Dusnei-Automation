@@ -59,8 +59,9 @@ class Vendas:
             LEFT JOIN produtos AS prod ON mprd.mprd_prod_codigo = prod.prod_codigo
             LEFT JOIN clientes AS clie ON mprc.mprc_codentidade = clie.clie_codigo
             LEFT JOIN (
-                SELECT DISTINCT ON (prun_prod_codigo) prun_prod_codigo, prun_emb
+                SELECT prun_prod_codigo, prun_emb
                 FROM produn
+                WHERE prun_unid_codigo IN ({unid_values})
                 ORDER BY prun_prod_codigo, prun_emb
             ) AS prun ON mprd.mprd_prod_codigo = prun.prun_prod_codigo
             WHERE mprd_status = 'N'
@@ -78,7 +79,11 @@ class Vendas:
         
         df = pd.read_sql_query(query, self.conn)
         return df
-        
+    
+    def pad_with_spaces(self, value, total_length):
+        return value.ljust(total_length)
+
+    
     def process_rows(self, df, unid_codigo):
         df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
         processed_rows = []
@@ -94,7 +99,9 @@ class Vendas:
                 
             cnpj_cliente = row['cnpj_cpf'].zfill(14)
             data_mvto = row['data_mvto'].strftime('%Y%m%d')
-            documento_nfe = row['nfe'].zfill(6) 
+            
+            documento_nfe = self.pad_with_spaces(row['nfe'], 20)
+            
             cod_barras = row['cod_barras'].zfill(13)
             dcto_cod = row['dcto_cod']
             
@@ -126,7 +133,7 @@ class Vendas:
             espaco_branco9 = ' '
             espaco_branco10 = '00000.00'
             
-            processed_row = (f'{caracter_adc}{cnpj_unid}{cnpj_cliente}{espaco_branco1}{data_mvto}{documento_nfe}{espaco_branco2}{cod_barras}{espaco_branco3}{qtde}{valor_unitario}{cod_vend}{espaco_branco4}{espaco_branco5}{tipo_doc}{cep}{espaco_branco6}{espaco_branco7}{espaco_branco8}{espaco_branco9}{espaco_branco10}{tipo_unid}') # noqa: E501, E261
+            processed_row = (f'{caracter_adc}{cnpj_unid}{cnpj_cliente}{espaco_branco1}{data_mvto}{documento_nfe}{cod_barras}{espaco_branco3}{qtde}{valor_unitario}{cod_vend}{espaco_branco4}{espaco_branco5}{tipo_doc}{cep}{espaco_branco6}{espaco_branco7}{espaco_branco8}{espaco_branco9}{espaco_branco10}{tipo_unid}') # noqa: E501, E261
             processed_rows.append(processed_row)
             
         logger.info('Query vendas OK!')
@@ -165,8 +172,8 @@ class Vendas:
     def vendas(self):
         get_tables_query = self.generate_sql_query()
         for unid_codigo in self.unid_codigos:
-            tables = get_tables_query
-            # tables = ['movprodd0121', 'movprodd0221', 'movprodd0321', 'movprodd0421', 'movprodd0521', 'movprodd0621', 'movprodd0721', 'movprodd0821', 'movprodd0921', 'movprodd1021', 'movprodd1121', 'movprodd1221','movprodd0122', 'movprodd0222', 'movprodd0322', 'movprodd0422', 'movprodd0522', 'movprodd0622', 'movprodd0722', 'movprodd0822', 'movprodd0922', 'movprodd1022', 'movprodd1122', 'movprodd1222', 'movprodd0123', 'movprodd0223', 'movprodd0323', 'movprodd0423', 'movprodd0523', 'movprodd0623', 'movprodd0723', 'movprodd0823', 'movprodd0923', 'movprodd1023',  'movprodd1123', 'movprodd1223']
+            # tables = get_tables_query
+            tables = ['movprodd0121', 'movprodd0221', 'movprodd0321', 'movprodd0421', 'movprodd0521', 'movprodd0621', 'movprodd0721', 'movprodd0821', 'movprodd0921', 'movprodd1021', 'movprodd1121', 'movprodd1221','movprodd0122', 'movprodd0222', 'movprodd0322', 'movprodd0422', 'movprodd0522', 'movprodd0622', 'movprodd0722', 'movprodd0822', 'movprodd0922', 'movprodd1022', 'movprodd1122', 'movprodd1222', 'movprodd0123', 'movprodd0223', 'movprodd0323', 'movprodd0423', 'movprodd0523', 'movprodd0623', 'movprodd0723', 'movprodd0823', 'movprodd0923', 'movprodd1023',  'movprodd1123', 'movprodd1223']
             
             dfs = [self.vendas_query(table, self.conn, unid_codigo) for table in tables]
             dfs = [df.dropna(axis=1, how='all') for df in dfs]
