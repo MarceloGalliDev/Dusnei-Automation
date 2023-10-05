@@ -15,7 +15,7 @@ class Estoques:
     def __init__(self):
         load_dotenv()
         self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
-        self.unid_codigos = ['001', '002', ['003','010']]
+        self.unid_codigos = ["001", "002", "003"]
         self.conn = DatabaseConnection.get_db_engine(self)
 
 
@@ -38,7 +38,7 @@ class Estoques:
             FROM produn AS prun 
             LEFT JOIN produtos AS prod ON prun.prun_prod_codigo = prod.prod_codigo
             WHERE prun.prun_bloqueado = 'N' 
-            AND prun.prun_unid_codigo IN ({unid_values})
+            AND prun.prun_unid_codigo = {unid_values}
             AND prun.prun_ativo = 'S'
             AND prod.prod_marca IN ('BRF', 'BRF IN NATURA')
             AND prun.prun_estoque1 > 0

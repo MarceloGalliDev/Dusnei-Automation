@@ -16,7 +16,7 @@ class Forca_De_Venda:
     def __init__(self):
         load_dotenv()
         self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
-        self.unid_codigos = ["001", "002", ['003','010']]
+        self.unid_codigos = ["001", "002", "003"]
         self.conn = DatabaseConnection.get_db_engine(self)
     
     def forca_de_vendas_query(self, conn, unid_codigo):
@@ -45,7 +45,7 @@ class Forca_De_Venda:
             AND clie.clie_endres NOT IN ('') 
             AND muni.muni_nome NOT IN ('','IDENTIFICAR', 'Identificar') 
             AND clie.clie_rota_codigo NOT IN ('') 
-            AND clie.clie_unid_codigo IN ({unid_values})
+            AND clie.clie_unid_codigo = {unid_values}
             AND clie.clie_cnpjcpf > '0'
             AND clie.clie_cnpjcpf <> ''
             AND clie.clie_cepres NOT IN ('00000-000','','0','00000','00000000')

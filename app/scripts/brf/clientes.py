@@ -9,6 +9,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from conn import DatabaseConnection
 from unidecode import unidecode
+import glob
 
 load_dotenv()
 
@@ -16,8 +17,9 @@ class Clientes:
     def __init__(self):
         load_dotenv()
         self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
-        self.unid_codigos = ['001', '002', ['003', '010']]
+        self.unid_codigos = ['001', '002', '003']
         self.conn = DatabaseConnection.get_db_engine(self)
+
 
     def clientes_query(self, conn, unid_codigo):
         if isinstance(unid_codigo, list):
@@ -47,7 +49,7 @@ class Clientes:
             AND clie.clie_endres NOT IN ('') 
             AND muni.muni_nome NOT IN ('','IDENTIFICAR', 'Identificar') 
             AND clie.clie_rota_codigo NOT IN ('') 
-            AND clie.clie_unid_codigo IN ({unid_values})
+            AND clie.clie_unid_codigo = {unid_values}
             AND clie.clie_unid_codigo NOT IN ('')
             AND clie.clie_cnpjcpf > '0'
             AND clie.clie_cepres NOT IN ('00000-000','','0','00000','00000000')
@@ -139,7 +141,4 @@ class Clientes:
 if __name__ == "__main__":
     db_clientes = Clientes()    
     db_clientes.clientes()
-    
-    
-    
     
