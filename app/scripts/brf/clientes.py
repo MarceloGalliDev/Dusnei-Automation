@@ -49,7 +49,6 @@ class Clientes:
             AND clie.clie_endres NOT IN ('') 
             AND muni.muni_nome NOT IN ('','IDENTIFICAR', 'Identificar') 
             AND clie.clie_rota_codigo NOT IN ('') 
-            AND clie.clie_unid_codigo = {unid_values}
             AND clie.clie_unid_codigo NOT IN ('')
             AND clie.clie_cnpjcpf > '0'
             AND clie.clie_cepres NOT IN ('00000-000','','0','00000','00000000')
@@ -57,6 +56,7 @@ class Clientes:
             AND clie.clie_cepres NOT IN ('')
             AND clie.clie_razaosocial NOT IN ('TESTE', '', 'VENDEDOR')
         """)
+            # AND clie.clie_unid_codigo = {unid_values}
         query_test = pd.read_sql_query(query, conn)
         return query_test
     

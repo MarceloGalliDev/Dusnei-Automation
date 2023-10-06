@@ -42,6 +42,7 @@ class Estoques:
             AND prun.prun_ativo = 'S'
             AND prod.prod_marca IN ('BRF', 'BRF IN NATURA')
             AND prun.prun_estoque1 > 0
+            AND prun.prun_prod_codigo NOT IN ('2836')
         """)
         return pd.read_sql_query(query, conn)
 

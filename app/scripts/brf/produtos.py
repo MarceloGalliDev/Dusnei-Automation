@@ -2,12 +2,13 @@
 # pylint: disable=all
 import os
 import time
+from datetime import datetime
+
 import openpyxl
 import pandas as pd
-from loguru import logger
-from datetime import datetime
-from dotenv import load_dotenv
 from conn import DatabaseConnection
+from dotenv import load_dotenv
+from loguru import logger
 
 load_dotenv()
 
@@ -24,27 +25,23 @@ class Produtos:
         else:
             unid_values = f"'{unid_codigo}'"
         query = (f"""
-            SELECT 
-                prun.prun_unid_codigo AS unidade,
-                prun.prun_ativo as tipo,
-                prun.prun_prod_codigo::TEXT AS prod_codigo,
-                prod.prod_codbarras AS cod_barras,
-                prod.prod_marca AS marca,
-                TO_CHAR(prod.prod_codigo, '00999') AS cod_prod,
-                forn.forn_razaosocial AS razao_fornecedor,
-                forn.forn_cnpjcpf AS cnpj_fornecedor,
+            SELECT
+                prod.prod_codigo::TEXT AS cod_prod,
                 prun.prun_emb AS embalagem,
+                prod.prod_codbarras AS cod_barras,
                 prod.prod_descricao AS produto,
                 prun.prun_estoque1 AS estoque1,
-                prod.prod_status AS status_prod,
-                prod.prod_forn_codigo::TEXT AS cod_fornecedor
-                FROM produn AS prun 
-                LEFT JOIN produtos AS prod ON prun.prun_prod_codigo = prod.prod_codigo
-                LEFT JOIN fornecedores AS forn ON prod.prod_forn_codigo = forn.forn_codigo
-                WHERE prun.prun_bloqueado = 'N' 
-                AND prun.prun_unid_codigo = {unid_values}
-                AND prod.prod_marca IN ('BRF','BRF IN NATURA')
+                prun.prun_prod_codigo AS unid
+                FROM produtos AS prod
+                INNER JOIN (
+                    SELECT prun_prod_codigo, prun_emb, prun_estoque1
+                    FROM produn
+                    WHERE prun_unid_codigo = {unid_values}
+                    ORDER BY prun_prod_codigo, prun_emb
+                ) AS prun ON prod.prod_codigo = prun.prun_prod_codigo
+                WHERE prod.prod_marca IN ('BRF','BRF IN NATURA')
                 AND prod.prod_status = 'N'
+                AND prod.prod_codigo NOT IN ('2836')  
         """)
         return pd.read_sql_query(query, conn)
 
@@ -53,29 +50,16 @@ class Produtos:
         for index, row in df.iterrows():
                         
             registro = 'V'
-            # cnpj_forn = row["cnpj_fornecedor"].zfill(14) if row["cnpj_fornecedor"] else '0'*14
             cnpj_forn = ('01838723010513')[:18].ljust(18)
-            # razao_forn = (row["razao_fornecedor"] or "")[:30].ljust(30)
-            razao_forn = ('BRF S.A.')[:29].ljust(29)
-            cod_produto = (row["cod_prod"] or "")[:15].ljust(15)
-            
-            if (row["embalagem"] != "KG"):
-                tipo_emb = "1"
-            else:
-                tipo_emb = "0"
-            
-            cod_barras = row["cod_barras"].zfill(14) if row["cod_barras"] else '0'*14
-            if cod_barras[0] != '7':
-                cod_barras_tipo = "3"
-            else:
-                cod_barras_tipo = "1"
-            
-            nome_produto = (row["produto"] or "")[:100].ljust(100)
+            razao_forn = ("BRF S.A.")[:30].ljust(30)
+            cod_produto = row["cod_prod"][:14].ljust(14)
+            tipo_emb = '0' if row["embalagem"] == "KG" else '1'
+            cod_barras = row["cod_barras"].ljust(14)
+            cod_barras_tipo = '1' if row["cod_barras"][0] == '7' else '3'
+            nome_produto = row["produto"][:100].ljust(100)
             razao_forn2 = ("BRF S.A.")[:40].ljust(40)
-            estoque_qtde = row["estoque1"]
-            status_prod = "A" if estoque_qtde > 0 else "I"
-
             espaco_branco1 = ' '*30
+            status_prod = "A" if row["estoque1"] > 0 else "I"
             espaco_branco2 = ' '*27
             
             processed_row = (f'{registro}{cnpj_forn}{razao_forn}{cod_produto}{tipo_emb}{cod_barras}{cod_barras_tipo}{nome_produto}{razao_forn2}{espaco_branco1}{status_prod}{espaco_branco2}')
