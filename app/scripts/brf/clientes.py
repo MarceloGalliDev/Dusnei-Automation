@@ -45,7 +45,7 @@ class Clientes:
                 clie.clie_ramoatividade AS ramo
             FROM clientes AS clie 
             LEFT JOIN municipios AS muni ON clie.clie_muni_codigo_res = muni.muni_codigo
-            WHERE clie.clie_tipos NOT IN ('','VE','FU','UN','NL')
+            WHERE clie.clie_tipos NOT IN ('','UN')
             AND clie.clie_endres NOT IN ('') 
             AND muni.muni_nome NOT IN ('','IDENTIFICAR', 'Identificar') 
             AND clie.clie_rota_codigo NOT IN ('') 
