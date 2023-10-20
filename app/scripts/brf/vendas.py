@@ -17,7 +17,7 @@ class Vendas:
     def __init__(self):
         load_dotenv()
         self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
-        self.unid_codigos = ["001", "002", "003"]
+        self.unid_codigos = ["001", "002", ["003", "010"]]
         self.conn = DatabaseConnection.get_db_engine(self)
         
     def generate_sql_query(self) -> List[str]:
@@ -61,11 +61,11 @@ class Vendas:
             LEFT JOIN (
                 SELECT prun_prod_codigo, prun_emb
                 FROM produn
-                WHERE prun_unid_codigo = {unid_values}
+                WHERE prun_unid_codigo IN ({unid_values})
                 ORDER BY prun_prod_codigo, prun_emb
             ) AS prun ON mprd.mprd_prod_codigo = prun.prun_prod_codigo
             WHERE mprd_status = 'N'
-            AND mprd_unid_codigo = {unid_values}
+            AND mprd_unid_codigo IN ({unid_values})
             AND prod.prod_marca IN ('BRF', 'BRF IN NATURA')
             AND mprd.mprd_dcto_codigo IN ('6666','6668','7339','7335','7338','7337','7260','7263','7262','7268','7264','7269','7267','7319','7318', '6680','6890')
             AND mprc.mprc_vend_codigo NOT IN ('0','00','000','0000','')
@@ -177,8 +177,8 @@ class Vendas:
     def vendas(self):
         get_tables_query = self.generate_sql_query()
         for unid_codigo in self.unid_codigos:
-            tables = get_tables_query
-            # tables = ['movprodd0121', 'movprodd0221', 'movprodd0321', 'movprodd0421', 'movprodd0521', 'movprodd0621', 'movprodd0721', 'movprodd0821', 'movprodd0921', 'movprodd1021', 'movprodd1121', 'movprodd1221','movprodd0122', 'movprodd0222', 'movprodd0322', 'movprodd0422', 'movprodd0522', 'movprodd0622', 'movprodd0722', 'movprodd0822', 'movprodd0922', 'movprodd1022', 'movprodd1122', 'movprodd1222', 'movprodd0123', 'movprodd0223', 'movprodd0323', 'movprodd0423', 'movprodd0523', 'movprodd0623', 'movprodd0723', 'movprodd0823', 'movprodd0923', 'movprodd1023',  'movprodd1123', 'movprodd1223']
+            # tables = get_tables_query
+            tables = ['movprodd0121', 'movprodd0221', 'movprodd0321', 'movprodd0421', 'movprodd0521', 'movprodd0621', 'movprodd0721', 'movprodd0821', 'movprodd0921', 'movprodd1021', 'movprodd1121', 'movprodd1221','movprodd0122', 'movprodd0222', 'movprodd0322', 'movprodd0422', 'movprodd0522', 'movprodd0622', 'movprodd0722', 'movprodd0822', 'movprodd0922', 'movprodd1022', 'movprodd1122', 'movprodd1222', 'movprodd0123', 'movprodd0223', 'movprodd0323', 'movprodd0423', 'movprodd0523', 'movprodd0623', 'movprodd0723', 'movprodd0823', 'movprodd0923', 'movprodd1023',  'movprodd1123', 'movprodd1223']
             
             dfs = [self.vendas_query(table, self.conn, unid_codigo) for table in tables]
             dfs = [df.dropna(axis=1, how='all') for df in dfs]
