@@ -1,9 +1,9 @@
 # flake8: noqa
 # pylint: disable=all
 from sqlalchemy import create_engine, exc
-from dotenv import load_dotenv
 from loguru import logger
 import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
