@@ -17,7 +17,7 @@ class Vendas:
     def __init__(self):
         load_dotenv()
         self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
-        self.unid_codigos = ["001", "002", ["003", "010"]]
+        self.unid_codigos = ["001", "002", "003", "010"]
         self.conn = DatabaseConnection.get_db_engine(self)
         
     def generate_sql_query(self) -> List[str]:
@@ -61,11 +61,11 @@ class Vendas:
             LEFT JOIN (
                 SELECT prun_prod_codigo, prun_emb
                 FROM produn
-                WHERE prun_unid_codigo IN ({unid_values})
+                WHERE prun_unid_codigo = {unid_values}
                 ORDER BY prun_prod_codigo, prun_emb
             ) AS prun ON mprd.mprd_prod_codigo = prun.prun_prod_codigo
             WHERE mprd_status = 'N'
-            AND mprd_unid_codigo IN ({unid_values})
+            AND mprd_unid_codigo = {unid_values}
             AND prod.prod_marca IN ('BRF', 'BRF IN NATURA')
             AND mprd.mprd_dcto_codigo IN ('6666','6668','7339','7335','7338','7337','7260','7263','7262','7268','7264','7269','7267','7319','7318', '6680','6890')
             AND mprc.mprc_vend_codigo NOT IN ('0','00','000','0000','')
@@ -74,6 +74,7 @@ class Vendas:
             AND clie.clie_cepres > '0'
             AND clie.clie_cepres NOT IN ('')
         """)
+            # AND prod.prod_codbarras = '7891515969509'
             # AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '10 DAYS'
             # AND mprd.mprd_datamvto > '2021-01-01'
         
@@ -85,7 +86,12 @@ class Vendas:
 
     
     def process_rows(self, df, unid_codigo):
-        df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
+        print('columns', df.columns)
+        print('unid', unid_codigo)
+        if df.empty == True:
+            print("Não existe dados para unidade informada!")
+        else:
+            df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
         processed_rows = []
         for index, row in df.iterrows():
             caracter_adc = "D"
@@ -183,7 +189,11 @@ class Vendas:
             dfs = [self.vendas_query(table, self.conn, unid_codigo) for table in tables]
             dfs = [df.dropna(axis=1, how='all') for df in dfs]
             df = pd.concat(dfs, ignore_index=True)
-            df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
+
+            if df.empty == True:
+                print("Não existe dados para unidade informada!")
+            else:
+                df = df.loc[~df['nome_clie'].str.contains('vendedor', case=False)]
 
             processed_rows = self.process_rows(df, unid_codigo)
 
