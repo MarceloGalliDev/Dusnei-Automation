@@ -86,8 +86,6 @@ class Vendas:
 
     
     def process_rows(self, df, unid_codigo):
-        print('columns', df.columns)
-        print('unid', unid_codigo)
         if df.empty == True:
             print("Não existe dados para unidade informada!")
         else:
