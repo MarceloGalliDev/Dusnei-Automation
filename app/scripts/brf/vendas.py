@@ -73,7 +73,7 @@ class Vendas:
             AND clie.clie_cepres NOT IN ('00000-000','','0','00000','00000000')
             AND clie.clie_cepres > '0'
             AND clie.clie_cepres NOT IN ('')
-            AND mprd.mprd_datamvto > '2023-10-31'
+            AND mprd.mprd_datamvto >= '2021-11-01'
         """)
             # AND prod.prod_codbarras = '7891515969509'
             # AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '10 DAYS'
