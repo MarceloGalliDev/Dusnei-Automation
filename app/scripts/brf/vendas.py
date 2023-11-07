@@ -17,7 +17,7 @@ class Vendas:
     def __init__(self):
         load_dotenv()
         self.path_dados = os.getenv('DUSNEI_DATA_DIRECTORY_BRF')
-        self.unid_codigos = ["001", "002", "003", "010"]
+        self.unid_codigos = ["001", "002", "003"]
         self.conn = DatabaseConnection.get_db_engine(self)
         
     def generate_sql_query(self) -> List[str]:
@@ -67,16 +67,23 @@ class Vendas:
             WHERE mprd_status = 'N'
             AND mprd_unid_codigo = {unid_values}
             AND prod.prod_marca IN ('BRF', 'BRF IN NATURA')
-            AND mprd.mprd_dcto_codigo IN ('6666','6668','7339','7335','7338','7337','7260','7263','7262','7268','7264','7269','7267','7319','7318', '6680','6890')
+            AND mprd.mprd_dcto_codigo IN (
+                '6666','6667','6668','7325','7336','7337','7338','7340','7341',
+                '7335','7339','7345',
+                '6680','6681','7320','7321','7326',
+                '6890','6892','7322','7346',
+                '7260','7262','7263','7264','7268','7269'
+            )
             AND mprc.mprc_vend_codigo NOT IN ('0','00','000','0000','')
             AND mprd.mprd_vlrunitario NOT IN ('0.0100000000')
             AND clie.clie_cepres NOT IN ('00000-000','','0','00000','00000000')
             AND clie.clie_cepres > '0'
             AND clie.clie_cepres NOT IN ('')
-            AND mprd.mprd_datamvto >= '2021-11-01'
+            AND mprd.mprd_datamvto = CURRENT_DATE - INTERVAL '1 day'
+            ORDER BY mprd.mprd_datamvto ASC
         """)
+            # AND mprd.mprd_datamvto BETWEEN '2023-10-11' AND '2023-11-06'
             # AND prod.prod_codbarras = '7891515969509'
-            # AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '10 DAYS'
         
         df = pd.read_sql_query(query, self.conn)
         return df
@@ -114,7 +121,7 @@ class Vendas:
                 
             dcto_cod = row['dcto_cod']
             
-            if dcto_cod in ['6666', '6668', '7339', '7335', '7338', '7337']:
+            if dcto_cod in ['6666','6667','6668','7325','7336','7337','7338','7340','7341','7335','7339','7345']:
                 qtde = '0' + row['qtde'].strip()
             else:
                 qtde = '-' + row['qtde'].strip()
@@ -126,7 +133,7 @@ class Vendas:
             )
 
             cod_vend = row['cod_vend'].zfill(4)            
-            tipo_doc = 'B' if dcto_cod in ['6890', '7267'] else 'N'
+            tipo_doc = 'B' if dcto_cod in ['6680','6681','7320','7321','7326','6890','6892','7322','7346'] else 'N'
             cep = row['cep']
 
             tipo_unid = '0002' if row['embalagem_vend'] == 'KG' else '0001'
