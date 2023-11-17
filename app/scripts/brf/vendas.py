@@ -82,8 +82,8 @@ class Vendas:
             AND mprd.mprd_datamvto = CURRENT_DATE - INTERVAL '1 day'
             ORDER BY mprd.mprd_datamvto ASC
         """)
+            # AND mprd.mprd_datamvto = '2023-11-10'
             # AND mprd.mprd_datamvto BETWEEN '2023-10-11' AND '2023-11-06'
-            # AND prod.prod_codbarras = '7891515969509'
         
         df = pd.read_sql_query(query, self.conn)
         return df
