@@ -7,15 +7,13 @@ from datetime import datetime
 from dotenv import load_dotenv
 from conn import ftp_config, config
 import sys
-sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))
-import log_config
+sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))  # type: ignore
 
 
 load_dotenv()
 
 
 def estoques_estado():
-    logger = log_config.setup_logger('mccain_log.log')
     FTP_CONFIG = ftp_config.FTP_CONFIG
 
     unid_codigos = [['001','003'], '002']
@@ -86,7 +84,7 @@ def estoques_estado():
             f'{os.getenv("DUSNEI_DATA_DIRECTORY_MCCAIN")}/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
-    logger.info('Arquivo estoques_estados.xlsx criado!')
+    print('Arquivo estoques_estados.xlsx criado!')
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
         ftp.login(user=FTP_CONFIG['user_ftp_mccain'], passwd=FTP_CONFIG['password_ftp_mccain'])
@@ -108,7 +106,7 @@ def estoques_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_pr, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logger.info(
+                print(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
                 
             if 'ESTOQUEDUSNEISP' in arquivos_data:
@@ -118,7 +116,7 @@ def estoques_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_sp, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logger.info(
+                print(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
 
 

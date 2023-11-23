@@ -7,15 +7,13 @@ from datetime import datetime
 from dotenv import load_dotenv
 from conn import ftp_config, config
 import sys
-sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))
-import log_config
+sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))  # type: ignore
 
 
 load_dotenv()
 
 
 def vendas_estado():
-    logger = log_config.setup_logger('mccain_log.log')
     FTP_CONFIG = ftp_config.FTP_CONFIG
 
     cod_estados = ['PR','SP']
@@ -46,7 +44,7 @@ def vendas_estado():
                     LEFT JOIN clientes AS clie ON mprc.mprc_codentidade = clie.clie_codigo
                     WHERE mprd.mprd_status = 'N' 
                     AND prod.prod_marca IN ('MCCAIN','MCCAIN RETAIL')
-                    AND mprd.mprd_dcto_codigo IN ('6666','6668','7335','7337','7338','7339','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318')
+                    AND mprd.mprd_dcto_codigo IN ('6666','6668','7339','7335','7338','7337','6680','6890','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318')
                     AND mprc.mprc_uf = '{cod_estado}'
                     AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '10 DAYS'
                 )  
@@ -116,7 +114,7 @@ def vendas_estado():
             f'{os.getenv("DUSNEI_DATA_DIRECTORY_MCCAIN")}/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
-    logger.info('Arquivo vendas_estados.xlsx criado!')
+    print('Arquivo vendas_estados.xlsx criado!')
 
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
@@ -139,7 +137,7 @@ def vendas_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_pr, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logger.info(
+                print(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
                 
             if 'VENDASDUSNEISP' in arquivos_data:
@@ -149,7 +147,7 @@ def vendas_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_sp, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logger.info(
+                print(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
 
 

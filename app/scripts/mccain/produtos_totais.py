@@ -7,15 +7,13 @@ from datetime import datetime
 from dotenv import load_dotenv
 from conn import ftp_config, config
 import sys
-sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))
-import log_config
+sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))  # type: ignore
 
 
 load_dotenv()
 
 
 def produtos():
-    logger = log_config.setup_logger('mccain_log.log')
     FTP_CONFIG = ftp_config.FTP_CONFIG
 
     unid_codigos = ['001', '002', '003']
@@ -91,7 +89,7 @@ def produtos():
             f'{os.getenv("DUSNEI_DATA_DIRECTORY_MCCAIN")}/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
-    logger.info('Arquivo produtos.xlsx criado!')
+    print('Arquivo produtos.xlsx criado!')
 
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
@@ -113,7 +111,7 @@ def produtos():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logger.info(
+                print(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
 
 

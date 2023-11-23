@@ -7,15 +7,13 @@ from datetime import datetime
 from dotenv import load_dotenv
 from conn import ftp_config, config
 import sys
-sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))
-import log_config
+sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))  # type: ignore
 
 
 load_dotenv()
 
 
 def clientes_estado():
-    logger = log_config.setup_logger('mccain_log.log')
     FTP_CONFIG = ftp_config.FTP_CONFIG
 
     cod_estados = ['PR','SP']
@@ -107,7 +105,7 @@ def clientes_estado():
             f'{os.getenv("DUSNEI_DATA_DIRECTORY_MCCAIN")}/{dataAtual}/{nomeArquivo}.xlsx')
 
         wb.save(local_arquivo)
-    logger.info('Arquivo clientes_estados.xlsx criado!')
+    print('Arquivo clientes_estados.xlsx criado!')
 
 
     with FTP(FTP_CONFIG['server_ftp_mccain']) as ftp:
@@ -130,7 +128,7 @@ def clientes_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_pr, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logger.info(
+                print(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
                 
             if 'CLIENTESDUSNEISP' in arquivos_data:
@@ -140,7 +138,7 @@ def clientes_estado():
                     with open(local_arquivo, 'rb') as local_file:
                         remote_path = os.path.join(remote_dir_path_sp, arquivos_data)
                         ftp.storbinary(f"STOR {remote_path}", local_file)
-                logger.info(
+                print(
                     f"Arquivo {os.path.basename(arquivos_data)} upload FTP server concluído com sucesso!")
             
 
