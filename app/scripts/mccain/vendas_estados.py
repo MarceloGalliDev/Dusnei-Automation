@@ -39,17 +39,18 @@ def vendas_estado():
                         prod.prod_marca AS marca,
                         SUBSTRING(clie.clie_cepres, 1,5) ||'-'|| SUBSTRING(clie.clie_cepres, 6,3) AS cep
                     FROM {table_name} AS mprd 
-                    LEFT JOIN movprodc AS mprc ON mprd.mprd_transacao = mprc.mprc_transacao
-                    LEFT JOIN produtos AS prod ON mprd.mprd_prod_codigo = prod.prod_codigo
-                    LEFT JOIN clientes AS clie ON mprc.mprc_codentidade = clie.clie_codigo
+                    INNER JOIN movprodc AS mprc ON mprd.mprd_transacao = mprc.mprc_transacao
+                    INNER JOIN produtos AS prod ON mprd.mprd_prod_codigo = prod.prod_codigo
+                    INNER JOIN clientes AS clie ON mprc.mprc_codentidade = clie.clie_codigo
                     WHERE mprd.mprd_status = 'N' 
                     AND prod.prod_marca IN ('MCCAIN','MCCAIN RETAIL')
-                    AND mprd.mprd_dcto_codigo IN ('6666','6668','7339','7335','7338','7337','6680','6890','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318')
+                    AND mprd.mprd_dcto_codigo IN ('6666','6667','6668','7339','7335','7338','7337','6680','6890','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318')
                     AND mprc.mprc_uf = '{cod_estado}'
                     AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '10 DAYS'
                 )  
             """)
-                    # AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '8 DAYS'
+                    # AND EXTRACT(MONTH FROM mprd.mprd_datamvto) = 12
+                    # AND mprd.mprd_datamvto >= '2023-09-01'
             return pd.read_sql_query(query, conn)
 
 

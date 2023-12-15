@@ -55,21 +55,10 @@ class PendenciasClientes():
             INNER JOIN supervisores AS supe ON vend.vend_supe_codigo = supe.supe_codigo
             WHERE pfin.pfin_status = 'P'
             AND pfin.pfin_datavcto < CURRENT_DATE
-            AND vend.vend_supe_codigo IN {tuple(cod_supe)}
+            AND vend.vend_supe_codigo = {cod_supe}
             ORDER BY pfin.pfin_datavcto DESC
         """)
         df = pd.read_sql_query(query, conn)
-
-        # Adiciona os códigos dos supervisores a lista, evitando duplicados
-        for supe_cod in df['supe_cod'].unique():
-            if supe_cod not in self.supervisores:
-                self.supervisores.append(supe_cod)
-        
-        # Adiciona os códigos dos supervisores a lista, evitando duplicados
-        for vend_cod in df['vend_cod'].unique():
-            if vend_cod not in self.vendedores:
-                self.vendedores.append(vend_cod)
-
         return df
     
     def save_to_excel_and_txt(self, cod_supe, data_atual):
