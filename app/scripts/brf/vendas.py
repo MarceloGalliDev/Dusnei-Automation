@@ -22,7 +22,7 @@ class Vendas:
         
     def generate_sql_query(self) -> List[str]:
         current_month = f"{datetime.now().month:02}"
-        current_year = datetime.now().year % 100  # Get the last two digits of the year
+        current_year = datetime.now().year % 100
 
         last_month = f"{(datetime.now().month - 1) % 12:02}"
         last_year = current_year if datetime.now().month > 1 else current_year - 1
