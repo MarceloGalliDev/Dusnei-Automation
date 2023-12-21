@@ -9,7 +9,6 @@ from datetime import datetime
 from dotenv import load_dotenv
 from conn import DatabaseConnection
 from unidecode import unidecode
-import glob
 
 load_dotenv()
 
