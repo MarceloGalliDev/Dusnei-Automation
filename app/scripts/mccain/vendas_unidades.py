@@ -3,6 +3,7 @@ import os
 import openpyxl
 import pandas as pd
 from ftplib import FTP
+from typing import List
 from datetime import datetime
 from dotenv import load_dotenv
 from conn import ftp_config, config
@@ -11,6 +12,23 @@ sys.path.append(os.getenv('DUSNEI_LOG_DIRECTORY'))  # type: ignore
 
 
 load_dotenv()
+
+
+def generate_sql_query() -> List[str]:
+    current_month = f"{datetime.now().month:02}"
+    current_year = datetime.now().year % 100
+
+    last_month = f"{(datetime.now().month - 1) % 12:02}"
+    
+    if last_month == "00":
+        last_month = "12"
+
+    last_year = current_year if datetime.now().month > 1 else current_year - 1
+
+    tables = [f"movprodd{last_month}{last_year}", f"movprodd{current_month}{current_year}"]
+
+    return tables
+
 
 
 def vendas():
@@ -43,7 +61,12 @@ def vendas():
                     WHERE mprd_status = 'N' 
                     AND mprd_unid_codigo IN ('{unid_codigo}')
                     AND prod.prod_marca IN ('MCCAIN','MCCAIN RETAIL')
-                    AND mprd.mprd_dcto_codigo IN ('6666','6667','6668','7339','7335','7338','7337','6680','6890','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318')
+                    AND mprd.mprd_dcto_codigo IN (
+                        '6666','6667','6668','6670','7340','7335','7337','7338','7339','7341','7345',
+                        '6680','6681','7321','7323','7326','7332',
+                        '6890','6892','7322','7346',
+                        '7260','7262','7263','7264','7268','7269'
+                    )
                     AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '10 DAYS'
                 )  
             """)
@@ -56,10 +79,7 @@ def vendas():
         wb = openpyxl.Workbook()
         ws = wb.active
 
-        tables = [
-            'movprodd0123', 'movprodd0223', 'movprodd0323', 'movprodd0423', 'movprodd0523', 'movprodd0623', 
-            'movprodd0723', 'movprodd0823', 'movprodd0923', 'movprodd1023', 'movprodd1123', 'movprodd1223'
-        ]
+        tables = generate_sql_query()
 
         filtered_dfs = [df.dropna(how='all', axis=1) for df in [vendas_query(table, conn, unid_codigo) for table in tables]]
         df = pd.concat(filtered_dfs)
@@ -76,7 +96,7 @@ def vendas():
             doc_cod = row["doc_cod"]
             quantity = row["quantity"]
 
-            if doc_cod in ['7260', '7263', '7262', '7268', '7264', '7269', '7267', '7319', '7318']:
+            if doc_cod in ['7260','7262','7263','7264','7268','7269']:
                 quantity = -quantity
 
             amount = str(row["amount"]).replace(',', '.')
