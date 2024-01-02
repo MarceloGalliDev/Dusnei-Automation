@@ -26,6 +26,10 @@ class Vendas:
         current_year = datetime.now().year % 100
 
         last_month = f"{(datetime.now().month - 1) % 12:02}"
+        
+        if last_month == "00":
+            last_month = "12"
+    
         last_year = current_year if datetime.now().month > 1 else current_year - 1
 
         tables = [f"movprodd{last_month}{last_year}", f"movprodd{current_month}{current_year}"]
