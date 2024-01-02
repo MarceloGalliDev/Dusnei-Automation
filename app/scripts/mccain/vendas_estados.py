@@ -44,7 +44,9 @@ def vendas_estado():
                     INNER JOIN clientes AS clie ON mprc.mprc_codentidade = clie.clie_codigo
                     WHERE mprd.mprd_status = 'N' 
                     AND prod.prod_marca IN ('MCCAIN','MCCAIN RETAIL')
-                    AND mprd.mprd_dcto_codigo IN ('6666','6667','6668','7339','7335','7338','7337','6680','6890','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318')
+                    AND mprd.mprd_dcto_codigo IN (
+                        '6666','6667','6668','7339','7335','7338','7337','6680','6890','7260','7263','7262','7268','7264','7269', '7267', '7319', '7318'
+                    )
                     AND mprc.mprc_uf = '{cod_estado}'
                     AND mprd.mprd_datamvto > CURRENT_DATE - INTERVAL '10 DAYS'
                 )  
@@ -61,18 +63,20 @@ def vendas_estado():
         ws = wb.active
 
         tables = [
-            'movprodd0123', 
-            'movprodd0223', 
-            'movprodd0323', 
-            'movprodd0423', 
-            'movprodd0523', 
-            'movprodd0623', 
-            'movprodd0723', 
-            'movprodd0823', 
-            'movprodd0923', 
-            'movprodd1023', 
             'movprodd1123', 
-            'movprodd1223'
+            'movprodd1223', 
+            'movprodd0124', 
+            'movprodd0224', 
+            'movprodd0324', 
+            'movprodd0424', 
+            'movprodd0524', 
+            'movprodd0624', 
+            'movprodd0724', 
+            'movprodd0824', 
+            'movprodd0924', 
+            'movprodd1024', 
+            'movprodd1124', 
+            'movprodd1224'
         ]
 
         filtered_dfs = [df.dropna(how='all', axis=1) for df in [vendas_query(table, conn, cod_estado) for table in tables]]
